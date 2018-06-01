@@ -1,0 +1,268 @@
+/Users/AnitaKristineAune/tensorflow-py2/bin/python /Users/AnitaKristineAune/Documents/Bachelorproject/ctc/predict.py
+/Users/AnitaKristineAune/tensorflow-py2/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+
+Reading test data: 
+('Reading csv:', 'data_dir/librivox-dev-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2703)
+('Total number of files (after reduction):', 2616)
+('max_intseq_length:', 279)
+('numclasses:', 29)
+('max_trans_charlength:', 279)
+('Words:', 48972)
+('Vocab:', 7726)
+2018-06-01 14:54:35.563547: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+/Users/AnitaKristineAune/tensorflow-py2/lib/python2.7/site-packages/keras/models.py:255: UserWarning: No training configuration found in save file: the model was *not* compiled. Compile it manually.
+  warnings.warn('No training configuration found in save file: '
+
+Loaded existing model:  /Users/AnitaKristineAune/Documents/Bachelorproject/train-logs/4DeepRNN/1805_4rnn.h5
+Feature type:  mfcc
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+masking (Masking)               (None, None, 26)     0           the_input[0][0]                  
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       masking[0][0]                    
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+deep_rnn_1 (SimpleRNN)          (None, None, 512)    524800      dropout_3[0][0]                  
+__________________________________________________________________________________________________
+deep_rnn_2 (SimpleRNN)          (None, None, 512)    524800      deep_rnn_1[0][0]                 
+__________________________________________________________________________________________________
+deep_rnn_3 (SimpleRNN)          (None, None, 512)    524800      deep_rnn_2[0][0]                 
+__________________________________________________________________________________________________
+deep_rnn_4 (SimpleRNN)          (None, None, 512)    524800      deep_rnn_3[0][0]                 
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    262656      deep_rnn_4[0][0]                 
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 2,915,869
+Trainable params: 2,915,869
+Non-trainable params: 0
+__________________________________________________________________________________________________
+
+ - Calculation WER on  data_dir/librivox-dev-clean.csv
+Average WER:  0.490048363095
+
+ - Predictions from batch index:  10 
+From:  data_dir/librivox-dev-clean.csv 
+
+Original:  drat em all what is it they wants they don't know what they wants                     
+Predicted:  dramol what is it they wans they don't know with they wance 
+
+Original:  he began presently to relent and spoke to me in a kinder manner                       
+Predicted:  he began resently to melendans bok  me an akind er manner 
+
+Original:  old days don't return for the asking                                                  
+Predicted:  ol tos days don't  return were the osing 
+
+Original:  this of course was mere bravado on the part of the commandant                         
+Predicted:  this of course was mere brovotow on the part of the common ont 
+
+Original:  he might be enchanted but that was the talisman                                       
+Predicted:  he might be inchantedbut that was setellismand 
+
+Original:  so we will be fellow laborers somewhat on the community system                        
+Predicted:  so we will be fellow labors some what on the commudity sustom 
+
+Original:  but he saw nothing that moved there no signal lights twinkled                         
+Predicted:  but he saw nothing the move there no signal lights twincled 
+
+Original:  grub pi le grub pi le                                                                 
+Predicted:  grep al grap w 
+
+Original:  there was the old imperious note in his failing whisper                               
+Predicted:  there was eolding perious notinies faling wisper 
+
+Original:  stir the soaked gelatin in while the cucumber is hot                                  
+Predicted:  stir the so jealotin en will the cucomberos hot 
+
+Original:  think of lady glenarvan think of mary grant                                           
+Predicted:  think of ladyclanar ren think of mary grar 
+
+Original:  delighted with such a fortunate result we lay down again                              
+Predicted:  t lighted with such a fortunat resol we lay down again 
+
+Original:  what true things are told in stories                                                  
+Predicted:  what trut things are told instories 
+
+Original:  peter crouching in the front seat saw nothing                                         
+Predicted:  peter crouching in the fronceat sinothing 
+
+Original:  illustration italian millet                                                           
+Predicted:  ilistration a galion melat 
+
+Original:  the boys belong to the gentleman who is a widower                                     
+Predicted:  the boys bulown to the dodt lan moas a wittle 
+
+Original:  the fact is she's feeling rather seedy poor child                                     
+Predicted:  the factis she speeling rather seavy por child 
+
+Original:  we remained several months but soon we were on the tramp again                        
+Predicted:  we remansorramons bot so we were on the trampagan 
+
+Original:  the cries and curses of the robbers filled the air                                    
+Predicted:  the cris and curses of the robbers fill the air 
+
+Original:  later however his old discretion asserted itself                                      
+Predicted:  later haver his all this fecion asaided itself 
+
+Original:  rhein and moselle eighteen ninety three                                               
+Predicted:  for i an anmosel aigten ninedy three 
+
+Original:  he was beaten for to night and he might just as well make the best of it              
+Predicted:  he was beaten fretonight any mih jusas amic the best of it 
+
+Original:  and i could never get as many as three such men together                              
+Predicted:  an i can never get as many a three such mensagether 
+
+Original:  illustration maize plant                                                              
+Predicted:  ilistration mas plant 
+
+Original:  he would go to her and tell her all his family complications                          
+Predicted:  he wouldget yo her antell her all his famly onbocations 
+
+Original:  we would fight to the death of course but after that                                  
+Predicted:  we would fight to the death of porse but after that 
+
+Original:  these wildering phantasies then carried me to see my lady dead                        
+Predicted:  bese willdering fanacis think carried me to see my ledy dead 
+
+Original:  there's a knocker if none of em haven't twisted it off                                
+Predicted:  there's anocker if none of am heaven twistidit of 
+
+Original:  but i could not bear the thought of wearing dead men's shoes                          
+Predicted:  but a could not bear the thought an wering dead man shos 
+
+Original:  surely i do not know said deucalion                                                   
+Predicted:  sorely i do not kno said to caean 
+
+Original:  he dropped back heavily into his chair by the fire                                    
+Predicted:  he dropped back heavily into his chair by the fire 
+
+Original:  you see the treatment is a trifle fanciful                                            
+Predicted:  you see the treatments is a fronful feonsoful 
+
+Original:  one or two of the musicians from the end of the hall                                  
+Predicted:  at ar to of the musitions from the end of the hall 
+
+Original:  i obeyed implicitly and met your excellency                                           
+Predicted:  i oll bad implasly an met your exceletecy 
+
+Original:  it it hasn't always made you miserable has it                                         
+Predicted:  it hasn always ma you miserable hasit 
+
+Original:  in the valley of the shadow of death he is with us                                    
+Predicted:  and the valley of the shadow ob death he is with its 
+
+Original:  handles of watercress may be attached to these baskets                                
+Predicted:  handles of water gress may be attache to these baskets 
+
+Original:  meanwhile how fared it with the flowers                                               
+Predicted:  mean wile helt fared it with the flowers 
+
+Original:  i was chilled to the bone wet tired hungry                                            
+Predicted:  i was chilto the bon wet tiord hungrep 
+
+Original:  certainly of course screamed the jackdaw                                              
+Predicted:  sertainly of cores scream te jackt a 
+
+Original:  she doesn't pick them up but just having them in the room sure doesn't give her asthma
+Predicted:  she osn't bic the up but just havenmin the roomshould asnt give her asma 
+
+Original:  for instance look at their behaviour in the matter of the ring                        
+Predicted:  frenct inc  look a ther behavyour in the matter of the ran 
+
+Original:  he rang again this time harder still no answer                                        
+Predicted:  he rang again thi time harda still no anso 
+
+Original:  they sat down and listened in silence                                                 
+Predicted:  they sait down and listend an silence 
+
+Original:  well of course they're dead what a question                                           
+Predicted:  well of corse ther dad what i question 
+
+Original:  i know what mamma can afford to give and i will see she gives it                      
+Predicted:  i know what momican afor togivan i will see she gives it 
+
+Original:  tom says thanks and looks at hilda and she blushes really                             
+Predicted:  onses thinks and lookes a held a and she bleses realy 
+
+Original:  for some reason the dead at hatchie bridge were not buried                            
+Predicted:  forsomreason the deaded hatc you bridge fore not beried 
+
+Original:  it's the first time hilda has been to our house and tom introduces her around         
+Predicted:  its if erstime held  has been to or house and tomareduciserround 
+
+Original:  the bell reverberated through what seemed like an empty house                         
+Predicted:  the bel riverborated through what seem like an impty hows 
+
+Original:  it was not a question who was dead or wounded but who was not                         
+Predicted:  it was not aquestion of hu was detter woged but who was not 
+
+Original:  the boy hastened away and the manager fell to his musings                             
+Predicted:  the boyhasan doay and the managerfalto his mesings 
+
+Original:  but now it doesn't seem to matter very much                                           
+Predicted:  bus now wih desen seem to matter of very much 
+
+Original:  but the wood pigeon was in the worst case of them all                                 
+Predicted:  but the wood pitcon was in the worst case of the mol 
+
+Original:  i'll teach my prisoners to attempt suicide                                            
+Predicted:  all teach my prisoners ditemsoasied 
+
+Original:  so that on that score there is little or no danger                                    
+Predicted:  so that on batscored ther th little or no danger 
+
+Original:  he lay patiently fighting for breath like a child with croup                          
+Predicted:  he la patiently fighting for brac like a child with crup 
+
+Original:  mac connell let me introduce mister bartley alexander                                 
+Predicted:  maconel thet introduce mister barly elexander 
+
+Original:  but he compromised by telling the boy that there would be no reply                    
+Predicted:  but e comprmis by telling the boy that there would be no repli 
+
+Original:  he looked dubiously at his brother in law but he did not ask him for information      
+Predicted:  e looks dobisly at is byther alo but e did not ask imfen frommation 
+
+Original:  fewer words than before but with the same mysterious music in them                    
+Predicted:  ou are word than before but with the same misterios nusigan them 
+
+Original:  a black drove came up over the hill behind the wedding party                          
+Predicted:  ablac drove came up over the hill behind the whadding party 
+
+Original:  he would explain to her just where he stood and how much he needed her                
+Predicted:  he waleexlan to hear just were he stead and how muchin nedad hear 
+
+Original:  anyhow we want to help got a job for us                                               
+Predicted:  any how we want to help got a job fors 
