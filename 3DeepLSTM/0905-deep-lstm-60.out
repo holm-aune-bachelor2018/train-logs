@@ -1,0 +1,630 @@
+/home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+WARNING:tensorflow:From /home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the retry module or similar alternatives.
+2018-05-09 12:41:48.532640: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-05-09 12:41:49.999502: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:03:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-09 12:41:50.164473: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 1 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-09 12:41:50.164561: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1423] Adding visible gpu devices: 0, 1
+2018-05-09 12:41:55.610267: I tensorflow/core/common_runtime/gpu/gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-05-09 12:41:55.610317: I tensorflow/core/common_runtime/gpu/gpu_device.cc:917]      0 1 
+2018-05-09 12:41:55.610325: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 0:   N N 
+2018-05-09 12:41:55.610329: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 1:   N N 
+2018-05-09 12:41:55.610990: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15133 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:03:00.0, compute capability: 6.0)
+2018-05-09 12:41:55.783767: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 15133 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-16GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+
+Reading training data:
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-train-clean-360.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 104014)
+('Total number of files (after reduction):', 102100)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 3490549)
+('Vocab:', 59235)
+
+Reading validation data: 
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-dev-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2703)
+('Total number of files (after reduction):', 2616)
+('max_intseq_length:', 279)
+('numclasses:', 29)
+('max_trans_charlength:', 279)
+('Words:', 48972)
+('Vocab:', 7726)
+
+Reading test data: 
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-test-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2620)
+('Total number of files (after reduction):', 2526)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 46839)
+('Vocab:', 7547)
+
+
+Model and training parameters: 
+Starting time:  2018-05-09 12:41:39
+ - epochs:  100 
+ - batch size:  64 
+ - input epoch length:  1024 
+ - network epoch length:  1024 
+ - training on  65536  files 
+ - learning rate:  0.0001 
+ - hidden units:  512 
+ - mfcc features:  26 
+ - dropout:  0.2 
+
+Creating new model:  deep_lstm
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       the_input[0][0]                  
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+CuDNN_lstm1 (CuDNNLSTM)         (None, None, 512)    2101248     dropout_3[0][0]                  
+__________________________________________________________________________________________________
+CuDNN_lstm2 (CuDNNLSTM)         (None, None, 512)    2101248     CuDNN_lstm1[0][0]                
+__________________________________________________________________________________________________
+CuDNN_lstm3 (CuDNNLSTM)         (None, None, 512)    2101248     CuDNN_lstm2[0][0]                
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    262656      CuDNN_lstm3[0][0]                
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 7,120,413
+Trainable params: 7,120,413
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Epoch 1/100
+ - 1791s - loss: 387.2091 - val_loss: 170.5689
+
+Epoch 00001: val_loss improved from inf to 170.56887, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.977529761905
+Epoch 2/100
+ - 1222s - loss: 250.8945 - val_loss: 133.2668
+
+Epoch 00002: val_loss improved from 170.56887 to 133.26681, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.92302827381
+Epoch 3/100
+ - 1217s - loss: 208.2461 - val_loss: 113.4190
+
+Epoch 00003: val_loss improved from 133.26681 to 113.41899, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.892522321429
+Epoch 4/100
+ - 1240s - loss: 181.6349 - val_loss: 99.9926
+
+Epoch 00004: val_loss improved from 113.41899 to 99.99262, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.899069940476
+Epoch 5/100
+ - 1238s - loss: 162.5804 - val_loss: 91.2476
+
+Epoch 00005: val_loss improved from 99.99262 to 91.24757, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.865736607143
+Epoch 6/100
+ - 1234s - loss: 148.3030 - val_loss: 85.0106
+
+Epoch 00006: val_loss improved from 91.24757 to 85.01058, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.871521577381
+Epoch 7/100
+ - 1238s - loss: 136.9078 - val_loss: 78.7594
+
+Epoch 00007: val_loss improved from 85.01058 to 78.75939, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.864304315476
+Epoch 8/100
+ - 1256s - loss: 127.6067 - val_loss: 74.6529
+
+Epoch 00008: val_loss improved from 78.75939 to 74.65285, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.834672619048
+Epoch 9/100
+ - 1271s - loss: 120.0007 - val_loss: 70.4081
+
+Epoch 00009: val_loss improved from 74.65285 to 70.40805, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.827845982143
+Epoch 10/100
+ - 1257s - loss: 113.2228 - val_loss: 67.3381
+
+Epoch 00010: val_loss improved from 70.40805 to 67.33814, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.813411458333
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 11/100
+ - 1247s - loss: 107.5553 - val_loss: 63.6901
+
+Epoch 00011: val_loss improved from 67.33814 to 63.69009, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.786439732143
+Epoch 12/100
+ - 1252s - loss: 102.4993 - val_loss: 62.5767
+
+Epoch 00012: val_loss improved from 63.69009 to 62.57668, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.779259672619
+Epoch 13/100
+ - 1256s - loss: 97.9832 - val_loss: 60.0525
+
+Epoch 00013: val_loss improved from 62.57668 to 60.05249, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.778701636905
+Epoch 14/100
+ - 1255s - loss: 94.0080 - val_loss: 57.3932
+
+Epoch 00014: val_loss improved from 60.05249 to 57.39324, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.769345238095
+Epoch 15/100
+ - 1216s - loss: 90.2682 - val_loss: 55.3682
+
+Epoch 00015: val_loss improved from 57.39324 to 55.36819, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.736365327381
+Epoch 16/100
+ - 1237s - loss: 87.0625 - val_loss: 54.9203
+
+Epoch 00016: val_loss improved from 55.36819 to 54.92030, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.733017113095
+Epoch 17/100
+ - 1201s - loss: 84.1198 - val_loss: 53.1729
+
+Epoch 00017: val_loss improved from 54.92030 to 53.17287, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.70546875
+Epoch 18/100
+ - 1241s - loss: 81.2373 - val_loss: 51.6876
+
+Epoch 00018: val_loss improved from 53.17287 to 51.68763, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.678236607143
+Epoch 19/100
+ - 1245s - loss: 78.7045 - val_loss: 50.6788
+
+Epoch 00019: val_loss improved from 51.68763 to 50.67880, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.71130952381
+Epoch 20/100
+ - 1215s - loss: 76.3193 - val_loss: 49.7473
+
+Epoch 00020: val_loss improved from 50.67880 to 49.74726, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.652659970238
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 21/100
+ - 1223s - loss: 74.1302 - val_loss: 49.1325
+
+Epoch 00021: val_loss improved from 49.74726 to 49.13254, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.653590029762
+Epoch 22/100
+ - 1221s - loss: 72.0319 - val_loss: 48.1504
+
+Epoch 00022: val_loss improved from 49.13254 to 48.15045, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.653459821429
+Epoch 23/100
+ - 1204s - loss: 70.0092 - val_loss: 47.3001
+
+Epoch 00023: val_loss improved from 48.15045 to 47.30006, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.67029389881
+Epoch 24/100
+ - 1204s - loss: 68.3168 - val_loss: 46.8455
+
+Epoch 00024: val_loss improved from 47.30006 to 46.84551, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.68435639881
+Epoch 25/100
+ - 1206s - loss: 66.5838 - val_loss: 46.3977
+
+Epoch 00025: val_loss improved from 46.84551 to 46.39772, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.66795014881
+Epoch 26/100
+ - 1241s - loss: 65.0181 - val_loss: 44.9252
+
+Epoch 00026: val_loss improved from 46.39772 to 44.92525, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.651264880952
+Epoch 27/100
+ - 1215s - loss: 63.5174 - val_loss: 44.7395
+
+Epoch 00027: val_loss improved from 44.92525 to 44.73954, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.653459821429
+Epoch 28/100
+ - 1215s - loss: 62.0588 - val_loss: 44.6933
+
+Epoch 00028: val_loss improved from 44.73954 to 44.69331, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.655357142857
+Epoch 29/100
+ - 1207s - loss: 60.6557 - val_loss: 43.7427
+
+Epoch 00029: val_loss improved from 44.69331 to 43.74273, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.650818452381
+Epoch 30/100
+ - 1210s - loss: 59.3517 - val_loss: 44.0656
+
+Epoch 00030: val_loss did not improve
+ - average WER:  0.668973214286
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 31/100
+ - 1232s - loss: 58.0524 - val_loss: 43.0518
+
+Epoch 00031: val_loss improved from 43.74273 to 43.05182, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.667522321429
+Epoch 32/100
+ - 1211s - loss: 56.8053 - val_loss: 42.5866
+
+Epoch 00032: val_loss improved from 43.05182 to 42.58657, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.64959077381
+Epoch 33/100
+ - 1214s - loss: 55.7803 - val_loss: 42.7547
+
+Epoch 00033: val_loss did not improve
+ - average WER:  0.673530505952
+Epoch 34/100
+ - 1226s - loss: 54.6993 - val_loss: 42.0264
+
+Epoch 00034: val_loss improved from 42.58657 to 42.02641, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.634970238095
+Epoch 35/100
+ - 1208s - loss: 53.6227 - val_loss: 42.2446
+
+Epoch 00035: val_loss did not improve
+ - average WER:  0.650855654762
+Epoch 36/100
+ - 1206s - loss: 52.6151 - val_loss: 41.7073
+
+Epoch 00036: val_loss improved from 42.02641 to 41.70729, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.628050595238
+Epoch 37/100
+ - 1244s - loss: 51.5044 - val_loss: 41.4185
+
+Epoch 00037: val_loss improved from 41.70729 to 41.41852, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.651357886905
+Epoch 38/100
+ - 1234s - loss: 50.6872 - val_loss: 41.0173
+
+Epoch 00038: val_loss improved from 41.41852 to 41.01729, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.656603422619
+Epoch 39/100
+ - 1200s - loss: 49.7099 - val_loss: 41.1826
+
+Epoch 00039: val_loss did not improve
+ - average WER:  0.626711309524
+Epoch 40/100
+ - 1228s - loss: 48.8159 - val_loss: 40.8144
+
+Epoch 00040: val_loss improved from 41.01729 to 40.81443, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.610900297619
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 41/100
+ - 1237s - loss: 48.1408 - val_loss: 40.5284
+
+Epoch 00041: val_loss improved from 40.81443 to 40.52839, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.621800595238
+Epoch 42/100
+ - 1209s - loss: 47.2656 - val_loss: 40.4920
+
+Epoch 00042: val_loss improved from 40.52839 to 40.49197, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.606045386905
+Epoch 43/100
+ - 1227s - loss: 46.5112 - val_loss: 40.2307
+
+Epoch 00043: val_loss improved from 40.49197 to 40.23070, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.628720238095
+Epoch 44/100
+ - 1195s - loss: 45.6337 - val_loss: 40.1051
+
+Epoch 00044: val_loss improved from 40.23070 to 40.10506, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.621279761905
+Epoch 45/100
+ - 1225s - loss: 44.9392 - val_loss: 40.0831
+
+Epoch 00045: val_loss improved from 40.10506 to 40.08305, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.602120535714
+Epoch 46/100
+ - 1218s - loss: 44.2272 - val_loss: 40.0457
+
+Epoch 00046: val_loss improved from 40.08305 to 40.04573, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.614248511905
+Epoch 47/100
+ - 1195s - loss: 43.4634 - val_loss: 40.1819
+
+Epoch 00047: val_loss did not improve
+ - average WER:  0.609802827381
+Epoch 48/100
+ - 1193s - loss: 42.8348 - val_loss: 40.5115
+
+Epoch 00048: val_loss did not improve
+ - average WER:  0.620833333333
+Epoch 49/100
+ - 1226s - loss: 42.1730 - val_loss: 39.3822
+
+Epoch 00049: val_loss improved from 40.04573 to 39.38218, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.609375
+Epoch 50/100
+ - 1197s - loss: 41.4338 - val_loss: 39.4692
+
+Epoch 00050: val_loss did not improve
+ - average WER:  0.569773065476
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 51/100
+ - 1194s - loss: 40.8705 - val_loss: 39.7711
+
+Epoch 00051: val_loss did not improve
+ - average WER:  0.614601934524
+Epoch 52/100
+ - 1221s - loss: 40.2232 - val_loss: 39.8064
+
+Epoch 00052: val_loss did not improve
+ - average WER:  0.619252232143
+Epoch 53/100
+ - 1199s - loss: 39.6993 - val_loss: 39.5170
+
+Epoch 00053: val_loss did not improve
+ - average WER:  0.61994047619
+Epoch 54/100
+ - 1237s - loss: 38.9703 - val_loss: 40.0451
+
+Epoch 00054: val_loss did not improve
+ - average WER:  0.615848214286
+Epoch 55/100
+ - 1217s - loss: 38.4570 - val_loss: 39.7634
+
+Epoch 00055: val_loss did not improve
+ - average WER:  0.635193452381
+Epoch 56/100
+ - 1236s - loss: 37.9215 - val_loss: 40.4517
+
+Epoch 00056: val_loss did not improve
+ - average WER:  0.597395833333
+Epoch 57/100
+ - 1203s - loss: 37.3049 - val_loss: 39.7794
+
+Epoch 00057: val_loss did not improve
+ - average WER:  0.602269345238
+Epoch 58/100
+ - 1237s - loss: 36.9664 - val_loss: 39.5906
+
+Epoch 00058: val_loss did not improve
+ - average WER:  0.599107142857
+Epoch 59/100
+ - 1239s - loss: 36.3454 - val_loss: 39.3412
+
+Epoch 00059: val_loss improved from 39.38218 to 39.34119, saving model to modelssave/0905-deep-lstm-60_best
+ - average WER:  0.59412202381
+Epoch 60/100
+ - 1238s - loss: 35.8955 - val_loss: 39.4375
+
+Epoch 00060: val_loss did not improve
+ - average WER:  0.58630952381
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 61/100
+ - 1234s - loss: 35.3675 - val_loss: 39.9513
+
+Epoch 00061: val_loss did not improve
+ - average WER:  0.595814732143
+Epoch 62/100
+ - 1242s - loss: 34.9190 - val_loss: 39.5571
+
+Epoch 00062: val_loss did not improve
+ - average WER:  0.596372767857
+Epoch 63/100
+ - 1216s - loss: 34.4771 - val_loss: 39.5611
+
+Epoch 00063: val_loss did not improve
+ - average WER:  0.600353422619
+Epoch 64/100
+ - 1234s - loss: 33.9818 - val_loss: 39.7069
+
+Epoch 00064: val_loss did not improve
+ - average WER:  0.61795014881
+Epoch 65/100
+ - 1234s - loss: 33.4964 - val_loss: 39.5103
+
+Epoch 00065: val_loss did not improve
+ - average WER:  0.59572172619
+Epoch 66/100
+ - 1204s - loss: 33.0699 - val_loss: 39.6907
+
+Epoch 00066: val_loss did not improve
+ - average WER:  0.579743303571
+Epoch 67/100
+ - 1199s - loss: 32.7129 - val_loss: 39.3623
+
+Epoch 00067: val_loss did not improve
+ - average WER:  0.583500744048
+Epoch 68/100
+ - 1239s - loss: 32.2650 - val_loss: 39.4350
+
+Epoch 00068: val_loss did not improve
+ - average WER:  0.586439732143
+Epoch 69/100
+ - 1235s - loss: 31.8826 - val_loss: 40.0720
+
+Epoch 00069: val_loss did not improve
+ - average WER:  0.592894345238
+Epoch 70/100
+ - 1227s - loss: 31.5765 - val_loss: 40.5284
+
+Epoch 00070: val_loss did not improve
+ - average WER:  0.61290922619
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 71/100
+ - 1224s - loss: 31.0934 - val_loss: 40.4972
+
+Epoch 00071: val_loss did not improve
+ - average WER:  0.612016369048
+Epoch 72/100
+ - 1430s - loss: 30.7996 - val_loss: 40.9489
+
+Epoch 00072: val_loss did not improve
+ - average WER:  0.60271577381
+Epoch 73/100
+ - 1223s - loss: 30.3770 - val_loss: 40.4736
+
+Epoch 00073: val_loss did not improve
+ - average WER:  0.60587797619
+Epoch 74/100
+ - 1202s - loss: 29.9152 - val_loss: 40.8909
+
+Epoch 00074: val_loss did not improve
+ - average WER:  0.583705357143
+Epoch 75/100
+ - 1216s - loss: 29.6007 - val_loss: 40.5127
+
+Epoch 00075: val_loss did not improve
+ - average WER:  0.588578869048
+Epoch 76/100
+ - 1215s - loss: 29.2790 - val_loss: 40.3271
+
+Epoch 00076: val_loss did not improve
+ - average WER:  0.582942708333
+Epoch 77/100
+ - 1202s - loss: 28.9216 - val_loss: 40.4944
+
+Epoch 00077: val_loss did not improve
+ - average WER:  0.612053571429
+Epoch 78/100
+ - 1247s - loss: 28.5922 - val_loss: 41.5981
+
+Epoch 00078: val_loss did not improve
+ - average WER:  0.604371279762
+Epoch 79/100
+ - 1230s - loss: 28.2500 - val_loss: 40.3002
+
+Epoch 00079: val_loss did not improve
+ - average WER:  0.591127232143
+Epoch 80/100
+ - 1204s - loss: 27.9237 - val_loss: 41.1612
+
+Epoch 00080: val_loss did not improve
+ - average WER:  0.598790922619
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 81/100
+ - 1253s - loss: 27.6771 - val_loss: 41.7126
+
+Epoch 00081: val_loss did not improve
+ - average WER:  0.593154761905
+Epoch 82/100
+ - 1206s - loss: 27.2356 - val_loss: 41.1795
+
+Epoch 00082: val_loss did not improve
+ - average WER:  0.58869047619
+Epoch 83/100
+ - 1223s - loss: 26.9197 - val_loss: 41.5884
+
+Epoch 00083: val_loss did not improve
+ - average WER:  0.575353422619
+Epoch 84/100
+ - 1239s - loss: 26.6282 - val_loss: 41.2485
+
+Epoch 00084: val_loss did not improve
+ - average WER:  0.58283110119
+Epoch 85/100
+ - 1218s - loss: 26.5740 - val_loss: 41.3474
+
+Epoch 00085: val_loss did not improve
+ - average WER:  0.591071428571
+Epoch 86/100
+ - 1243s - loss: 26.1300 - val_loss: 41.6712
+
+Epoch 00086: val_loss did not improve
+ - average WER:  0.560807291667
+Epoch 87/100
+ - 1254s - loss: 25.7608 - val_loss: 41.6405
+
+Epoch 00087: val_loss did not improve
+ - average WER:  0.57384672619
+Epoch 88/100
+ - 1203s - loss: 25.5779 - val_loss: 41.2804
+
+Epoch 00088: val_loss did not improve
+ - average WER:  0.576023065476
+Epoch 89/100
+ - 1217s - loss: 25.2827 - val_loss: 42.0057
+
+Epoch 00089: val_loss did not improve
+ - average WER:  0.589415922619
+Epoch 90/100
+ - 1231s - loss: 25.0263 - val_loss: 42.0144
+
+Epoch 00090: val_loss did not improve
+ - average WER:  0.575892857143
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+Epoch 91/100
+ - 1203s - loss: 24.7378 - val_loss: 42.0083
+
+Epoch 00091: val_loss did not improve
+ - average WER:  0.57849702381
+Epoch 92/100
+ - 1215s - loss: 24.4322 - val_loss: 41.6581
+
+Epoch 00092: val_loss did not improve
+ - average WER:  0.590085565476
+Epoch 93/100
+ - 1203s - loss: 24.1939 - val_loss: 42.4511
+
+Epoch 00093: val_loss did not improve
+ - average WER:  0.576488095238
+Epoch 94/100
+ - 1207s - loss: 23.8837 - val_loss: 42.1681
+
+Epoch 00094: val_loss did not improve
+ - average WER:  0.576767113095
+Epoch 95/100
+ - 1235s - loss: 23.7158 - val_loss: 42.5083
+
+Epoch 00095: val_loss did not improve
+ - average WER:  0.565922619048
+Epoch 96/100
+ - 1207s - loss: 23.4330 - val_loss: 42.7178
+
+Epoch 00096: val_loss did not improve
+ - average WER:  0.588002232143
+Epoch 97/100
+ - 1238s - loss: 23.1315 - val_loss: 42.5382
+
+Epoch 00097: val_loss did not improve
+ - average WER:  0.579817708333
+Epoch 98/100
+ - 1206s - loss: 23.0122 - val_loss: 43.0610
+
+Epoch 00098: val_loss did not improve
+ - average WER:  0.574181547619
+Epoch 99/100
+ - 1205s - loss: 22.7799 - val_loss: 42.8560
+
+Epoch 00099: val_loss did not improve
+ - average WER:  0.567522321429
+Epoch 100/100
+ - 1206s - loss: 22.5265 - val_loss: 43.4236
+
+Epoch 00100: val_loss did not improve
+ - average WER:  0.565885416667
+Log file saved:  log_files/0905-deep-lstm-60_05-09_1241.csv
+An exception of type ValueError occurred. Arguments:
+('max() arg is an empty sequence',)
+Ending time:  2018-05-10 22:55:20

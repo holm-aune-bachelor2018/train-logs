@@ -1,0 +1,282 @@
+/home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+WARNING:tensorflow:From /home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the retry module or similar alternatives.
+2018-05-18 14:08:03.935805: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-05-18 14:08:05.445088: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:03:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-18 14:08:05.616216: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 1 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-18 14:08:05.616289: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1423] Adding visible gpu devices: 0, 1
+2018-05-18 14:08:06.153400: I tensorflow/core/common_runtime/gpu/gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-05-18 14:08:06.153445: I tensorflow/core/common_runtime/gpu/gpu_device.cc:917]      0 1 
+2018-05-18 14:08:06.153453: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 0:   N N 
+2018-05-18 14:08:06.153458: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 1:   N N 
+2018-05-18 14:08:06.154151: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15133 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:03:00.0, compute capability: 6.0)
+2018-05-18 14:08:06.310812: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 15133 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-16GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+/home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/keras/models.py:255: UserWarning: No training configuration found in save file: the model was *not* compiled. Compile it manually.
+  warnings.warn('No training configuration found in save file: '
+
+Reading test data: 
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-test-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2620)
+('Total number of files (after reduction):', 2526)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 46839)
+('Vocab:', 7547)
+
+Loaded existing parallel model:  modelssave/0905-deep-lstm-60
+Feature type:  mfcc
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       the_input[0][0]                  
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+CuDNN_lstm1 (CuDNNLSTM)         (None, None, 512)    2101248     dropout_3[0][0]                  
+__________________________________________________________________________________________________
+CuDNN_lstm2 (CuDNNLSTM)         (None, None, 512)    2101248     CuDNN_lstm1[0][0]                
+__________________________________________________________________________________________________
+CuDNN_lstm3 (CuDNNLSTM)         (None, None, 512)    2101248     CuDNN_lstm2[0][0]                
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    262656      CuDNN_lstm3[0][0]                
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 7,120,413
+Trainable params: 7,120,413
+Non-trainable params: 0
+__________________________________________________________________________________________________
+
+ - Calculation WER on  /home/anitakau/ctc/data_dir/librivox-test-clean.csv
+Average WER:  0.650316220238
+
+ - Predictions from batch index:  10 
+From:  /home/anitakau/ctc/data_dir/librivox-test-clean.csv 
+
+Original:  in this guise it becomes horrible                                                  
+Predicted:  in this skys it becomes horrible ba 
+
+Original:  done he ain't done a thing he'd oughter sence he was born                          
+Predicted:  don he done a thing he order since he was born ta 
+
+Original:  so i lived and now am your tooth thrall well it is the luck of war                 
+Predicted:  s i lived an now yourto thrall well it is the luck of war ba 
+
+Original:  the ballet began the effect was more than beautiful                                
+Predicted:  the balley began the effect o as more than beautiful  
+
+Original:  but even the unsuccessful dramatist has his moments                                
+Predicted:  but even the unsuccessal dramagist has his moments a 
+
+Original:  a terrible thought flashed into my mind                                            
+Predicted:  a terrible fought flashed into my mind er 
+
+Original:  yet that task was not so easy as you may suppose                                   
+Predicted:  yet that task was not so easy as u may suppose aa 
+
+Original:  and i declare it's too bad that it is                                              
+Predicted:  and i declar its to badh that it is a 
+
+Original:  to this we reply in one word only                                                  
+Predicted:  to this wo prply and one word only ba 
+
+Original:  chapter three as master wishes                                                     
+Predicted:  chapter three as master wishes  
+
+Original:  my dragon's belly is never full and on board went the gold                         
+Predicted:  i dragons velly is never fall and an bord winth the gold a 
+
+Original:  aren't you splashed look at the spider webs all over the grass                     
+Predicted:  i yost blashed look at the spider reps alliver the grass ca 
+
+Original:  he impressed me as being a perfectly honest man                                    
+Predicted:  he impressed me is being a profectly on est man a 
+
+Original:  the departure was not at all agreeable                                             
+Predicted:  but a parture was  not at all agreeable a 
+
+Original:  the weather if we may use that term will change before long                        
+Predicted:  the weather if we may use the term will change before lan 
+
+Original:  men should not speculate about the nature of god                                   
+Predicted:  men should not speculate about the nature of god a 
+
+Original:  or hath he given us any gift                                                       
+Predicted:  or half he given as any gift a 
+
+Original:  now you'll stay cried van say polly won't you                                      
+Predicted:  now you'll stay cried man sa polly mont you  
+
+Original:  nottingham castle was reached and admittance was demanded                          
+Predicted:  not again castle was reached and inmittens was tomanded ca 
+
+Original:  voltaire picked up something from the ground and looked at it                      
+Predicted:  ol cher picked up something from the ground and looked at it who 
+
+Original:  presently he crossed the floor of his room with decided step                       
+Predicted:  precintly he crossed the flor of his room with dicided step a 
+
+Original:  yes but perhaps i frightened her in what way                                       
+Predicted:  yes but perhaps i frightened her in what way  
+
+Original:  the goat's warlike spirit was roused by this successful attack                     
+Predicted:  begoats wor likes spirit was roused by thi successa latah a 
+
+Original:  save me masters but you startled me rarely                                         
+Predicted:  seafe me mastrs bet usedtortled me rarely ba 
+
+Original:  it was one of the masterly and charming stories of dumas the elder                 
+Predicted:  ou was on of the masterly andcharming stories of demothe elder te 
+
+Original:  he is supposed to sign all the checks of the concern                               
+Predicted:  he is supposed tosign all the checks of the concernt a 
+
+Original:  a cold lucid indifference reigned in his soul                                      
+Predicted:  ac cold losed indifference arained in his soul a 
+
+Original:  the head of the patchwork girl was the most curious part of her                    
+Predicted:  the head of the patc workgirl was the most curious part onf her pa 
+
+Original:  she had almost forgotten that it was here within touch and sight                   
+Predicted:  she had almost forgotten that who was here within touch and sight a 
+
+Original:  nothing new weather unchanged the wind freshens                                    
+Predicted:  nothing new whether unchanged the wind freshets ca 
+
+Original:  truly such a horse should be worth much in nottingham fair                         
+Predicted:  truly such a horse would be worth much anotting him far a 
+
+Original:  she asked impulsively i didn't believe you could persuade her father               
+Predicted:  she asked himpulseiply i didn't believe you could persuade her father te 
+
+Original:  i say sir harry the little girl's going famously to night isn't she                
+Predicted:  pi sasir herri the little girls going famouslyten night isn't sho a 
+
+Original:  concord returned to its place amidst the tents                                     
+Predicted:  conocore turned to its place amidst thetents oo 
+
+Original:  run back uncas and bring me the size of the singer's foot                          
+Predicted:  run back oncaus and bring me the size of the singers foot a 
+
+Original:  or of the habits of our people it is quite impossible                              
+Predicted:  wor of the habits of our people bit is quite impossible  
+
+Original:  it would have been more wonderful had he spoken without a bidding                  
+Predicted:  hit would have been more wonderful had he spoken without a bidding  
+
+Original:  but thou art not such a lover my beloved                                           
+Predicted:  but thou art not such a lever my belofid a 
+
+Original:  and he leaned against the wall lost in reverie                                     
+Predicted:  and he leaned against the wall lost in revery bo 
+
+Original:  cold is it my darling bless your sweet face                                        
+Predicted:  coldis it my darling bless your sweet face a 
+
+Original:  now what was the sense of it two innocent babies like that                         
+Predicted:  now what is the sense of it te is ha bavies like that firor 
+
+Original:  yes my dear watson i have solved the mystery                                       
+Predicted:  yes my dear waton i have so or the mistery b 
+
+Original:  the examination however resulted in no discovery                                   
+Predicted:  the examination however resulted e notiscovery ar 
+
+Original:  i'll do anything you wish me to bartley she said tremulously                       
+Predicted:  i'll do anything you wish me to bartley she said trema aly a 
+
+Original:  that is a very fine cap you have he said                                           
+Predicted:  that is a very fine captou hav he said da 
+
+Original:  why a tongue impress'd with honey from every wind                                  
+Predicted:  why a tomu impressed with honey from efvery wind a 
+
+Original:  the arrow pierced his heart and wounded him mortally                               
+Predicted:  the erowpeerce to hart and wounded him mortaly b 
+
+Original:  the delawares are children of the tortoise and they outstrip the deer              
+Predicted:  the doloares are children of the tortos in the outstripped the dear co 
+
+Original:  the king seemed only pleased with every one present                                
+Predicted:  the king saemed only plaased withevery one present o 
+
+Original:  effects of the increased use and disuse of parts                                   
+Predicted:  if ecidiine crease use and disuse of parts u 
+
+Original:  i have been here this quarter of an hour replied la valliere                       
+Predicted:  i have been her this quarter of an hour replied levothea b 
+
+Original:  ojo had never eaten such a fine meal in all his life                               
+Predicted:  o joh had never eatens such a fine meal in ol his life pa 
+
+Original:  ambrose met me at the bottom of the stairs and showed me the way to the supper room
+Predicted:  ambros met made the botvof stairs than shobd me the way to the supper room bo 
+
+Original:  the lagoon had been level with the dykes a week ago and now                        
+Predicted:  the lugood had been level with a diges aweak ago and now a 
+
+Original:  to ask any more questions of you i believe would be unfair                         
+Predicted:  to ask any more questions of you i believe would be unfair ba 
+
+Original:  the floor more than anything else showed the great age of the room                 
+Predicted:  thefoort more than anything els showed the gret age of the room a 
+
+Original:  no sound broke the stillness of the night                                          
+Predicted:  no sound broke the stilnest of the night o 
+
+Original:  alexander leaned forward and warmed his hands before the blaze                     
+Predicted:  olexanderlyaned forward and warmed his hands before the blaze o 
+
+Original:  the squire helped to thrust them all in and entered swiftly himself                
+Predicted:  the squire helped to thrust the all in and entered swiftly imself a 
+
+Original:  indeed he persecuted the church of christ for a long time                          
+Predicted:  indeed he persecuted the church of crist for a mong time ca 
+
+Original:  what could i do now but just lay myself down and die                               
+Predicted:  what cad do now but just lam isuf down and tie c 
+
+Original:  the wine did certainly bring back the color to the squire's cheeks                 
+Predicted:  the wine ad certainly bring back the color to the squires cheeks a 
+
+Original:  i shudder as i recall these monsters to my remembrance                             
+Predicted:  i shudder as i recall these mosters to maramemberice ba 
+
+Original:  mister soames was somewhat overwhelmed by this flood of information                
+Predicted:  mister salms was some at over wellmed by the sflad of information o 
+

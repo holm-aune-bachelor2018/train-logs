@@ -1,0 +1,607 @@
+/home/anitakau/envs/tensorflow-workq/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+2018-05-03 12:44:44.631108: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-05-03 12:44:46.101006: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:03:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-03 12:44:46.270038: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 1 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-03 12:44:46.270106: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1423] Adding visible gpu devices: 0, 1
+2018-05-03 12:44:51.223687: I tensorflow/core/common_runtime/gpu/gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-05-03 12:44:51.223730: I tensorflow/core/common_runtime/gpu/gpu_device.cc:917]      0 1 
+2018-05-03 12:44:51.223738: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 0:   N N 
+2018-05-03 12:44:51.223742: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 1:   N N 
+2018-05-03 12:44:51.224391: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15133 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:03:00.0, compute capability: 6.0)
+2018-05-03 12:44:51.397104: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 15133 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-16GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+
+Reading training data:
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-train-clean-360.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 104014)
+('Total number of files (after reduction):', 102100)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 3490549)
+('Vocab:', 59235)
+
+Reading validation data: 
+('Reading csv:', '/home/anitakau/ctc/data_dir/librivox-test-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2620)
+('Total number of files (after reduction):', 2526)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 46839)
+('Vocab:', 7547)
+
+
+Model and training parameters: 
+Starting time:  2018-05-03 12:44:43
+ - epochs:  100 
+ - batch size:  64 
+ - input epoch length:  1024 
+ - network epoch length:  1024 
+ - training on  65536  files 
+ - learning rate:  0.0001 
+ - hidden units:  512 
+ - mfcc features:  26 
+ - dropout:  0.2 
+
+Creating new model:  dnn_brnn
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+masking (Masking)               (None, None, 26)     0           the_input[0][0]                  
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       masking[0][0]                    
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+bi_rnn (Bidirectional)          (None, None, 1024)   1049600     dropout_3[0][0]                  
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    524800      bi_rnn[0][0]                     
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 2,128,413
+Trainable params: 2,128,413
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Epoch 1/100
+ - 2020s - loss: 499.6950 - val_loss: 203.9799
+ - average WER:  0.963783482143
+Epoch 2/100
+ - 1955s - loss: 289.3494 - val_loss: 157.2312
+ - average WER:  0.929092261905
+Epoch 3/100
+ - 1950s - loss: 247.6392 - val_loss: 136.9294
+ - average WER:  0.896279761905
+Epoch 4/100
+ - 1951s - loss: 225.1345 - val_loss: 123.9074
+ - average WER:  0.857607886905
+Epoch 5/100
+ - 1954s - loss: 209.6414 - val_loss: 116.1155
+ - average WER:  0.8515625
+Epoch 6/100
+ - 1950s - loss: 198.0325 - val_loss: 110.0165
+ - average WER:  0.834319196429
+Epoch 7/100
+ - 1950s - loss: 189.0456 - val_loss: 104.3976
+ - average WER:  0.839174107143
+Epoch 8/100
+ - 1948s - loss: 181.6805 - val_loss: 99.6697
+ - average WER:  0.840885416667
+Epoch 9/100
+ - 1947s - loss: 175.4626 - val_loss: 96.3711
+ - average WER:  0.82654389881
+Epoch 10/100
+ - 1947s - loss: 170.0263 - val_loss: 93.5849
+ - average WER:  0.810546875
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 11/100
+ - 1951s - loss: 165.2500 - val_loss: 90.6981
+ - average WER:  0.802306547619
+Epoch 12/100
+ - 1952s - loss: 161.0808 - val_loss: 89.4680
+ - average WER:  0.777845982143
+Epoch 13/100
+ - 1950s - loss: 157.3145 - val_loss: 86.6011
+ - average WER:  0.788151041667
+Epoch 14/100
+ - 1953s - loss: 153.8798 - val_loss: 84.7630
+ - average WER:  0.779166666667
+Epoch 15/100
+ - 1945s - loss: 150.7624 - val_loss: 83.8352
+ - average WER:  0.796912202381
+Epoch 16/100
+ - 1950s - loss: 147.9868 - val_loss: 82.2378
+ - average WER:  0.76015625
+Epoch 17/100
+ - 1949s - loss: 145.3368 - val_loss: 81.7548
+ - average WER:  0.763169642857
+Epoch 18/100
+ - 1949s - loss: 142.9683 - val_loss: 79.2479
+ - average WER:  0.747507440476
+Epoch 19/100
+ - 1949s - loss: 140.6995 - val_loss: 78.6714
+ - average WER:  0.75939360119
+Epoch 20/100
+ - 1955s - loss: 138.6231 - val_loss: 76.9910
+ - average WER:  0.728125
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 21/100
+ - 1951s - loss: 136.6132 - val_loss: 75.6866
+ - average WER:  0.732161458333
+Epoch 22/100
+ - 1951s - loss: 134.7281 - val_loss: 74.8925
+ - average WER:  0.730747767857
+Epoch 23/100
+ - 1955s - loss: 132.9834 - val_loss: 73.9556
+ - average WER:  0.749274553571
+Epoch 24/100
+ - 1950s - loss: 131.4796 - val_loss: 72.4612
+ - average WER:  0.738913690476
+Epoch 25/100
+ - 1952s - loss: 129.8729 - val_loss: 72.5466
+ - average WER:  0.717280505952
+Epoch 26/100
+ - 1951s - loss: 128.3899 - val_loss: 71.6260
+ - average WER:  0.733984375
+Epoch 27/100
+ - 1951s - loss: 127.0406 - val_loss: 71.3247
+ - average WER:  0.707328869048
+Epoch 28/100
+ - 1951s - loss: 125.6878 - val_loss: 70.6097
+ - average WER:  0.690197172619
+Epoch 29/100
+ - 1952s - loss: 124.4646 - val_loss: 69.6380
+ - average WER:  0.686272321429
+Epoch 30/100
+ - 1954s - loss: 123.1727 - val_loss: 69.5449
+ - average WER:  0.700390625
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 31/100
+ - 1949s - loss: 122.1941 - val_loss: 69.8704
+ - average WER:  0.706938244048
+Epoch 32/100
+ - 1951s - loss: 120.9102 - val_loss: 68.0993
+ - average WER:  0.720851934524
+Epoch 33/100
+ - 1950s - loss: 119.9264 - val_loss: 67.2289
+ - average WER:  0.71173735119
+Epoch 34/100
+ - 1949s - loss: 118.8775 - val_loss: 66.6439
+ - average WER:  0.688411458333
+Epoch 35/100
+ - 1952s - loss: 117.8974 - val_loss: 65.5532
+ - average WER:  0.67693452381
+Epoch 36/100
+ - 1951s - loss: 116.9540 - val_loss: 66.0220
+ - average WER:  0.677306547619
+Epoch 37/100
+ - 1949s - loss: 116.0643 - val_loss: 65.4273
+ - average WER:  0.682514880952
+Epoch 38/100
+ - 1950s - loss: 115.1921 - val_loss: 65.6241
+ - average WER:  0.679501488095
+Epoch 39/100
+ - 1951s - loss: 114.3383 - val_loss: 64.7290
+ - average WER:  0.663523065476
+Epoch 40/100
+ - 1951s - loss: 113.5041 - val_loss: 63.9005
+ - average WER:  0.70978422619
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 41/100
+ - 1949s - loss: 112.6952 - val_loss: 63.5019
+ - average WER:  0.653720238095
+Epoch 42/100
+ - 1950s - loss: 111.9546 - val_loss: 64.1114
+ - average WER:  0.652697172619
+Epoch 43/100
+ - 1948s - loss: 111.1834 - val_loss: 63.4425
+ - average WER:  0.645535714286
+Epoch 44/100
+ - 1952s - loss: 110.4451 - val_loss: 62.8646
+ - average WER:  0.676376488095
+Epoch 45/100
+ - 1949s - loss: 109.8188 - val_loss: 62.2430
+ - average WER:  0.660007440476
+Epoch 46/100
+ - 1951s - loss: 109.1063 - val_loss: 61.7782
+ - average WER:  0.671298363095
+Epoch 47/100
+ - 1949s - loss: 108.5357 - val_loss: 61.4931
+ - average WER:  0.652064732143
+Epoch 48/100
+ - 1951s - loss: 107.8686 - val_loss: 61.5691
+ - average WER:  0.675260416667
+Epoch 49/100
+ - 1951s - loss: 107.2766 - val_loss: 61.0013
+ - average WER:  0.665848214286
+Epoch 50/100
+ - 1949s - loss: 106.8162 - val_loss: 60.3790
+ - average WER:  0.673530505952
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 51/100
+ - 1948s - loss: 106.1386 - val_loss: 60.0165
+ - average WER:  0.661662946429
+Epoch 52/100
+ - 1949s - loss: 105.5870 - val_loss: 60.1998
+ - average WER:  0.644456845238
+Epoch 53/100
+ - 1952s - loss: 105.0534 - val_loss: 59.8771
+ - average WER:  0.671726190476
+Epoch 54/100
+ - 1952s - loss: 104.4799 - val_loss: 60.1006
+ - average WER:  0.655710565476
+Epoch 55/100
+ - 1948s - loss: 104.0044 - val_loss: 59.4435
+ - average WER:  0.642373511905
+Epoch 56/100
+ - 1949s - loss: 103.4591 - val_loss: 59.3273
+ - average WER:  0.661272321429
+Epoch 57/100
+ - 1950s - loss: 103.0453 - val_loss: 59.4367
+ - average WER:  0.605264136905
+Epoch 58/100
+ - 1951s - loss: 102.5104 - val_loss: 58.7869
+ - average WER:  0.670498511905
+Epoch 59/100
+ - 1951s - loss: 102.0128 - val_loss: 59.1176
+ - average WER:  0.667280505952
+Epoch 60/100
+ - 1952s - loss: 101.5840 - val_loss: 58.5002
+ - average WER:  0.658686755952
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 61/100
+ - 1953s - loss: 101.1131 - val_loss: 58.2947
+ - average WER:  0.652399553571
+Epoch 62/100
+ - 1952s - loss: 100.6475 - val_loss: 57.7514
+ - average WER:  0.660360863095
+Epoch 63/100
+ - 1953s - loss: 100.2448 - val_loss: 57.4881
+ - average WER:  0.634449404762
+Epoch 64/100
+ - 1953s - loss: 99.8714 - val_loss: 57.6148
+ - average WER:  0.639006696429
+Epoch 65/100
+ - 1954s - loss: 99.4330 - val_loss: 57.4298
+ - average WER:  0.613058035714
+Epoch 66/100
+ - 1953s - loss: 99.0713 - val_loss: 57.1094
+ - average WER:  0.631733630952
+Epoch 67/100
+ - 1952s - loss: 98.6644 - val_loss: 57.1246
+ - average WER:  0.626227678571
+Epoch 68/100
+ - 1953s - loss: 98.2859 - val_loss: 57.4039
+ - average WER:  0.628292410714
+Epoch 69/100
+ - 1953s - loss: 97.8394 - val_loss: 56.4344
+ - average WER:  0.608779761905
+Epoch 70/100
+ - 1953s - loss: 97.5797 - val_loss: 57.0599
+ - average WER:  0.621130952381
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 71/100
+ - 1951s - loss: 97.1574 - val_loss: 56.3450
+ - average WER:  0.646149553571
+Epoch 72/100
+ - 1956s - loss: 96.8918 - val_loss: 55.8373
+ - average WER:  0.615271577381
+Epoch 73/100
+ - 1951s - loss: 96.4459 - val_loss: 56.4777
+ - average WER:  0.623716517857
+Epoch 74/100
+ - 1952s - loss: 96.1758 - val_loss: 55.4888
+ - average WER:  0.639099702381
+Epoch 75/100
+ - 1952s - loss: 95.8200 - val_loss: 55.6993
+ - average WER:  0.635584077381
+Epoch 76/100
+ - 1952s - loss: 95.5785 - val_loss: 55.3710
+ - average WER:  0.613634672619
+Epoch 77/100
+ - 1950s - loss: 95.2365 - val_loss: 56.0879
+ - average WER:  0.639248511905
+Epoch 78/100
+ - 1954s - loss: 94.9012 - val_loss: 55.4448
+ - average WER:  0.61720610119
+Epoch 79/100
+ - 1953s - loss: 94.5205 - val_loss: 55.3061
+ - average WER:  0.602269345238
+Epoch 80/100
+ - 1951s - loss: 94.2719 - val_loss: 54.8709
+ - average WER:  0.631026785714
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 81/100
+ - 1952s - loss: 93.9351 - val_loss: 55.4124
+ - average WER:  0.650539434524
+Epoch 82/100
+ - 1953s - loss: 93.6067 - val_loss: 54.4331
+ - average WER:  0.61954985119
+Epoch 83/100
+ - 1951s - loss: 93.3087 - val_loss: 54.6078
+ - average WER:  0.607198660714
+Epoch 84/100
+ - 1950s - loss: 93.0865 - val_loss: 54.1479
+ - average WER:  0.595052083333
+Epoch 85/100
+ - 1952s - loss: 92.7651 - val_loss: 54.4361
+ - average WER:  0.596744791667
+Epoch 86/100
+ - 1955s - loss: 92.5236 - val_loss: 53.8277
+ - average WER:  0.61017485119
+Epoch 87/100
+ - 1954s - loss: 92.2199 - val_loss: 54.3583
+ - average WER:  0.61404389881
+Epoch 88/100
+ - 1952s - loss: 91.9522 - val_loss: 53.7959
+ - average WER:  0.62421875
+Epoch 89/100
+ - 1952s - loss: 91.7013 - val_loss: 53.8846
+ - average WER:  0.588020833333
+Epoch 90/100
+ - 1954s - loss: 91.4525 - val_loss: 53.3187
+ - average WER:  0.624423363095
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Epoch 91/100
+ - 1953s - loss: 91.1739 - val_loss: 53.9255
+ - average WER:  0.623307291667
+Epoch 92/100
+ - 2007s - loss: 90.9977 - val_loss: 53.4432
+ - average WER:  0.607310267857
+Epoch 93/100
+ - 1975s - loss: 90.7322 - val_loss: 54.2727
+ - average WER:  0.57814360119
+Epoch 94/100
+ - 1952s - loss: 90.5384 - val_loss: 53.0018
+ - average WER:  0.589713541667
+Epoch 95/100
+ - 1953s - loss: 90.2398 - val_loss: 53.2532
+ - average WER:  0.613578869048
+Epoch 96/100
+ - 1951s - loss: 89.9486 - val_loss: 53.1320
+ - average WER:  0.590401785714
+Epoch 97/100
+ - 1951s - loss: 89.7993 - val_loss: 52.9667
+ - average WER:  0.615178571429
+Epoch 98/100
+ - 1952s - loss: 89.5950 - val_loss: 53.8568
+ - average WER:  0.604334077381
+Epoch 99/100
+ - 1951s - loss: 89.3732 - val_loss: 52.5444
+ - average WER:  0.618098958333
+Epoch 100/100
+ - 1951s - loss: 89.1420 - val_loss: 53.0316
+ - average WER:  0.583891369048
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+
+ - Training ended, prediction samples -
+Original:  she sent me the pages in question before she died                 
+Predicted:  hesentte the paes in quistion beforshe did 
+
+Original:  a golden fortune and a happy life                                 
+Predicted:  a cold en fortun an i happy life 
+
+Original:  the top floor belongs to miles mc laren                           
+Predicted:  the top flor blongs to mals the claran 
+
+Original:  then he looked down the lagoon was dry                            
+Predicted:  then he looked don he logo was dry 
+
+Original:  then he tossed it down and seized the next                        
+Predicted:  then he tasted down an sease then next 
+
+Original:  of starting i didn't know the way to come                         
+Predicted:  of starig a i now the way to com 
+
+Original:  when do you intend that the john bright shall start               
+Predicted:  when yo intem hat the jom bri shal star 
+
+Original:  but who is this fellow plucking at your sleeve                    
+Predicted:  but whoth hisfellow pociat te speve 
+
+Original:  and god the father who raised him from the dead                   
+Predicted:  in go the father who rase him from the dead 
+
+Original:  lady larkspur starts suddenly and turns towards him               
+Predicted:  lady lirs berstter suddenly intrnsart him 
+
+Original:  your father thought a moment then looked at your mother and smiled
+Predicted:  you father thot amoent ad lookd ta tou mother and smil 
+
+Original:  may you drink heart's ease from it for many years                 
+Predicted:  may you drin hartsees from it for many years 
+
+Original:  the indian i also thought nothing of                              
+Predicted:  the indian i also thought nothing of 
+
+Original:  a robber viking said the king and scowled at me                   
+Predicted:  a roborfikengsaid the king and hy scalldit me 
+
+Original:  oh sir don't mention it said missus poyser                        
+Predicted:  o siro mentiont said iss pocor 
+
+Original:  captain servadac hastened towards him                             
+Predicted:  captain serva dack hason tward him 
+
+Original:  i tell him to give me some coffee if it is good                   
+Predicted:  i ton to get we so cofy of it is good 
+
+Original:  burn fire burn flicker flicker flame                              
+Predicted:  burn fire brn slickker leccr lan 
+
+Original:  we sunk his ship and men but him we brought to you                
+Predicted:  we somei ship an men that him we brought to yo 
+
+Original:  o life of this our spring                                         
+Predicted:  o life of this arspring 
+
+Original:  that will be a queer thing to be sure                             
+Predicted:  that whel be aquer thing to be sure 
+
+Original:  you will take them from my private treasure                       
+Predicted:  you wel take them from my pria treasure 
+
+Original:  we used to dispute about politics and religion                    
+Predicted:  wese to disped bout patisnrolison 
+
+Original:  come we'll have our coffee in the other room and you can smoke    
+Predicted:  com will have eur cofee othe rom ant you consmok 
+
+Original:  then lord tuppeny well what about auction                         
+Predicted:  then  lord tup anne wha what bout otion 
+
+Original:  if she could only see phronsie for just one moment                
+Predicted:  if she botd onma see fronsy fort just one moment 
+
+Original:  how may we obtain remission of our sins                           
+Predicted:  how ma we abtan remision of our sens 
+
+Original:  but then the picture was gone as quickly as it came               
+Predicted:  but then the picture was gon as quickly as a came 
+
+Original:  they were so extremely curious                                    
+Predicted:  they were so extrean curios 
+
+Original:  husband the next thing to a wife                                  
+Predicted:  hustend the nex thing to a wife 
+
+Original:  there is nothing else that looks so jolly                         
+Predicted:  there's nothing else that look so joly 
+
+Original:  in those very terms i even added more                             
+Predicted:  indhose vey tom s i eaven hadida 
+
+Original:  and she was very fond of you too aunt rachel                      
+Predicted:  an she was eery found ofuuto an recho 
+
+Original:  oh yes said jack and i'm nowhere                                  
+Predicted:  o yes a ac and im noware 
+
+Original:  at dinner lake was easy and amusing                               
+Predicted:  ids inner lak was easian imusing 
+
+Original:  and yet what a fine gallant lad                                   
+Predicted:  and yet whan a fin galant lad 
+
+Original:  now the object of this soliloquy is plain                         
+Predicted:  now the ondect of this olicuee is plain 
+
+Original:  thinking of all this i went to sleep                              
+Predicted:  think i v al this i wenttosly 
+
+Original:  ah the swamp the cruel swamp                                      
+Predicted:  i  swaf the co swa 
+
+Original:  i shall never get to twenty at that rate                          
+Predicted:  i shall never ced tichwenty at that rat 
+
+Original:  do you think so she replied with indifference                     
+Predicted:  doyou think so she replyed with indifference 
+
+Original:  better go he had counselled sententiously                         
+Predicted:  better go he ad counse sintentiously 
+
+Original:  there is a more or less elaborate system of rank and grades       
+Predicted:  there is amorene senrebrat sisttoma renon greats 
+
+Original:  a route slightly less direct that's all                           
+Predicted:  arout lightly las diract that sal 
+
+Original:  if spoken to she would not speak again                            
+Predicted:  af spokento she would not speak again 
+
+Original:  but what is the delicate mission i asked                          
+Predicted:  but wot ist te delicam mision aasked 
+
+Original:  the hope and dream of harvest was upon the land                   
+Predicted:  the hope en dream of harvos was upon the land 
+
+Original:  it won't be much but i'm grateful to find a friend                
+Predicted:  it wolt be much but am greatfulto find of friend 
+
+Original:  alexander unclenched the two hands at his sides                   
+Predicted:  elx enercluched the to hands at his sides 
+
+Original:  now mister soames at your disposal                                
+Predicted:  now mister soms at your spose 
+
+Original:  its curtains were of thick and faded tapestry                     
+Predicted:  its curtains worf tick andfeded tapstry 
+
+Original:  he pulled up a window as if the air were heavy                    
+Predicted:  he puldupple windo as if the air were heavy 
+
+Original:  look at that he held out his hand                                 
+Predicted:  look at that he howd of his hand 
+
+Original:  these means cannot be contaminated                                
+Predicted:  these means cannot be contaminin 
+
+Original:  and thee won't go why should i                                    
+Predicted:  and te won't go by should i 
+
+Original:  he's another who's awfully keen about her let me introduce you    
+Predicted:  is anothe rsote en afbot er la entoduce yo 
+
+Original:  mainhall liked alexander because he was an engineer               
+Predicted:  main hal like doxane becosy was an enging er 
+
+Original:  i want to get away from it all swoons                             
+Predicted:  i wentto cet awa from at a swu 
+
+Original:  for a long time neither hilda nor bartley spoke                   
+Predicted:  for long time o the hildan or bartly spok 
+
+Original:  but i didn't know you've only to tell me now                      
+Predicted:  but i didn't no you've only to tel me now 
+
+Original:  then is the time to introduce a meal on the stage                 
+Predicted:  then is the time tangarece omel on estage 
+
+Original:  the flame is the enemy of the wing                                
+Predicted:  the flames the enemi of the win 
+
+Original:  he moved uneasily and his chair creaked                           
+Predicted:  he moved on e easily in his char creet 
+
+Original:  was it not enough to say from god the father                      
+Predicted:  was anot enogh to say from got the father 
+
+Log file saved:  log_files/0305-brnn-60_05-03_1244.csv
+Model saved:  modelssave/0305-brnn-60
+Ending time:  2018-05-05 19:00:58
