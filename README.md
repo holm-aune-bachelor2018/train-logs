@@ -1,13 +1,14 @@
 ## train-logs
 
-This repo contains the result and log files from the training of the models at https://github.com/holm-aune-bachelor2018/ctc
+This repo contains the result and log files as well as the trained models from https://github.com/holm-aune-bachelor2018/ctc
 
 Results are a part of the Bachelor Thesis in Computer Engineering at NTNU, IDI 2018 for Anita Kristine Aune and Marit Sundet-Holm
 
 Each trained model has its own folder containing:
-- Output log generated during training
+- Output log generated during training 
 - CSV file with results (WER, loss, validation loss)
 - Output log from a predict run
+- Model as .h5 file
 
 ## Licence
 This file is part of Speech recognition with CTC in Keras.
