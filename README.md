@@ -8,10 +8,10 @@ This repository contains the result- and log files, as well as the trained model
 
 
 Each trained model has its own folder containing:
-- Output log generated during training 
-- CSV file with results (WER, loss, validation loss)
-- Output log from a predict run
-- Model as .h5 file
+- Output log generated during training (.out)
+- CSV file with results (WER, loss, validation loss) (.csv)
+- Output log from a predict run (.out)
+- The trained model (.h5)
 
 ## Licence
 This file is part of Speech recognition with CTC in Keras.
