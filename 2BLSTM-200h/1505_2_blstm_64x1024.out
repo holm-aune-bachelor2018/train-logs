@@ -1,0 +1,924 @@
+/home/marith1/envs/tensorflow/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+WARNING:tensorflow:From /home/marith1/envs/tensorflow/lib/python2.7/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the retry module or similar alternatives.
+2018-05-15 12:45:39.201965: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-05-15 12:45:40.718680: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:03:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-15 12:45:40.895498: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 1 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-15 12:45:40.895572: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1423] Adding visible gpu devices: 0, 1
+2018-05-15 12:45:45.946850: I tensorflow/core/common_runtime/gpu/gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-05-15 12:45:45.946894: I tensorflow/core/common_runtime/gpu/gpu_device.cc:917]      0 1 
+2018-05-15 12:45:45.946902: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 0:   N N 
+2018-05-15 12:45:45.946907: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 1:   N N 
+2018-05-15 12:45:45.947651: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15133 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:03:00.0, compute capability: 6.0)
+2018-05-15 12:45:46.105695: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 15133 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-16GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+
+Reading training data:
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-train-clean-360.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 104014)
+('Total number of files (after reduction):', 102100)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 3490549)
+('Vocab:', 59235)
+
+Reading validation data: 
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-dev-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2703)
+('Total number of files (after reduction):', 2616)
+('max_intseq_length:', 279)
+('numclasses:', 29)
+('max_trans_charlength:', 279)
+('Words:', 48972)
+('Vocab:', 7726)
+
+Reading test data: 
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-test-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2620)
+('Total number of files (after reduction):', 2526)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 46839)
+('Vocab:', 7547)
+
+
+Model and training parameters: 
+Starting time:  2018-05-15 12:45:31
+ - epochs:  100 
+ - batch size:  64 
+ - input epoch length:  1024 
+ - network epoch length:  1024 
+ - training on  65536  files 
+ - learning rate:  0.0001 
+ - hidden units:  512 
+ - mfcc features:  26 
+ - dropout:  0.2 
+
+Creating new model:  dnn_blstm
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       the_input[0][0]                  
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+CuDNN_bi_lstm_1 (Bidirectional) (None, None, 512)    4202496     dropout_3[0][0]                  
+__________________________________________________________________________________________________
+CuDNN_bi_lstm_2 (Bidirectional) (None, None, 512)    4202496     CuDNN_bi_lstm_1[0][0]            
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    262656      CuDNN_bi_lstm_2[0][0]            
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 9,221,661
+Trainable params: 9,221,661
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Epoch 1/100
+ - 2159s - loss: 391.4708 - val_loss: 158.2224
+
+Epoch 00001: val_loss improved from inf to 158.22240, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.935974702381 
+
+Epoch 2/100
+ - 1583s - loss: 227.1733 - val_loss: 114.6855
+
+Epoch 00002: val_loss improved from 158.22240 to 114.68553, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.867299107143 
+
+Epoch 3/100
+ - 1583s - loss: 180.7226 - val_loss: 96.5332
+
+Epoch 00003: val_loss improved from 114.68553 to 96.53322, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.834449404762 
+
+Epoch 4/100
+ - 1580s - loss: 154.4619 - val_loss: 84.9667
+
+Epoch 00004: val_loss improved from 96.53322 to 84.96674, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.775130208333 
+
+Epoch 5/100
+ - 1579s - loss: 136.1732 - val_loss: 75.6427
+
+Epoch 00005: val_loss improved from 84.96674 to 75.64271, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.72380952381 
+
+Epoch 6/100
+ - 1577s - loss: 122.3869 - val_loss: 69.2168
+
+Epoch 00006: val_loss improved from 75.64271 to 69.21683, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.670647321429 
+
+Epoch 7/100
+ - 1577s - loss: 111.6946 - val_loss: 63.0676
+
+Epoch 00007: val_loss improved from 69.21683 to 63.06760, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.689918154762 
+
+Epoch 8/100
+ - 1575s - loss: 103.0012 - val_loss: 59.2010
+
+Epoch 00008: val_loss improved from 63.06760 to 59.20098, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.605375744048 
+
+Epoch 9/100
+ - 1576s - loss: 95.7785 - val_loss: 55.5485
+
+Epoch 00009: val_loss improved from 59.20098 to 55.54852, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.581994047619 
+
+Epoch 10/100
+ - 1577s - loss: 89.5702 - val_loss: 53.3501
+
+Epoch 00010: val_loss improved from 55.54852 to 53.35006, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.611569940476 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 11/100
+ - 1585s - loss: 84.2591 - val_loss: 50.6477
+
+Epoch 00011: val_loss improved from 53.35006 to 50.64773, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.568284970238 
+
+Epoch 12/100
+ - 1574s - loss: 79.5786 - val_loss: 48.7323
+
+Epoch 00012: val_loss improved from 50.64773 to 48.73230, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.510602678571 
+
+Epoch 13/100
+ - 1573s - loss: 75.4373 - val_loss: 46.8903
+
+Epoch 00013: val_loss improved from 48.73230 to 46.89031, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.601395089286 
+
+Epoch 14/100
+ - 1572s - loss: 71.6895 - val_loss: 45.5966
+
+Epoch 00014: val_loss improved from 46.89031 to 45.59664, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.567578125 
+
+Epoch 15/100
+ - 1577s - loss: 68.3178 - val_loss: 43.8641
+
+Epoch 00015: val_loss improved from 45.59664 to 43.86413, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.615290178571 
+
+Epoch 16/100
+ - 1574s - loss: 65.3268 - val_loss: 42.5849
+
+Epoch 00016: val_loss improved from 43.86413 to 42.58486, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.622321428571 
+
+Epoch 17/100
+ - 1569s - loss: 62.4600 - val_loss: 41.2983
+
+Epoch 00017: val_loss improved from 42.58486 to 41.29830, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.588634672619 
+
+Epoch 18/100
+ - 1571s - loss: 59.9590 - val_loss: 40.9939
+
+Epoch 00018: val_loss improved from 41.29830 to 40.99390, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.515866815476 
+
+Epoch 19/100
+ - 1569s - loss: 57.5622 - val_loss: 40.0091
+
+Epoch 00019: val_loss improved from 40.99390 to 40.00910, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.519475446429 
+
+Epoch 20/100
+ - 1569s - loss: 55.3546 - val_loss: 38.7780
+
+Epoch 00020: val_loss improved from 40.00910 to 38.77798, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.541871279762 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 21/100
+ - 1573s - loss: 53.3015 - val_loss: 38.1356
+
+Epoch 00021: val_loss improved from 38.77798 to 38.13564, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.492633928571 
+
+Epoch 22/100
+ - 1568s - loss: 51.3905 - val_loss: 37.5072
+
+Epoch 00022: val_loss improved from 38.13564 to 37.50720, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.460751488095 
+
+Epoch 23/100
+ - 1568s - loss: 49.5258 - val_loss: 37.3191
+
+Epoch 00023: val_loss improved from 37.50720 to 37.31909, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.437686011905 
+
+Epoch 24/100
+ - 1568s - loss: 47.8070 - val_loss: 36.7424
+
+Epoch 00024: val_loss improved from 37.31909 to 36.74240, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.580970982143 
+
+Epoch 25/100
+ - 1571s - loss: 46.2294 - val_loss: 36.3866
+
+Epoch 00025: val_loss improved from 36.74240 to 36.38660, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.51408110119 
+
+Epoch 26/100
+ - 1567s - loss: 44.6992 - val_loss: 35.8654
+
+Epoch 00026: val_loss improved from 36.38660 to 35.86541, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.392373511905 
+
+Epoch 27/100
+ - 1566s - loss: 43.2134 - val_loss: 35.6980
+
+Epoch 00027: val_loss improved from 35.86541 to 35.69796, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.436421130952 
+
+Epoch 28/100
+ - 1567s - loss: 41.8800 - val_loss: 35.3424
+
+Epoch 00028: val_loss improved from 35.69796 to 35.34236, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.507886904762 
+
+Epoch 29/100
+ - 1565s - loss: 40.5797 - val_loss: 35.0905
+
+Epoch 00029: val_loss improved from 35.34236 to 35.09050, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.493917410714 
+
+Epoch 30/100
+ - 1566s - loss: 39.3084 - val_loss: 34.7160
+
+Epoch 00030: val_loss improved from 35.09050 to 34.71595, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.393526785714 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 31/100
+ - 1567s - loss: 38.1319 - val_loss: 34.9043
+
+Epoch 00031: val_loss did not improve
+ - average WER:  0.403701636905 
+
+Epoch 32/100
+ - 1564s - loss: 36.9163 - val_loss: 35.1707
+
+Epoch 00032: val_loss did not improve
+ - average WER:  0.483649553571 
+
+Epoch 33/100
+ - 1566s - loss: 35.8822 - val_loss: 34.8077
+
+Epoch 00033: val_loss did not improve
+ - average WER:  0.521930803571 
+
+Epoch 34/100
+ - 1562s - loss: 34.8268 - val_loss: 34.9926
+
+Epoch 00034: val_loss did not improve
+ - average WER:  0.391257440476 
+
+Epoch 35/100
+ - 1564s - loss: 33.8816 - val_loss: 34.6535
+
+Epoch 00035: val_loss improved from 34.71595 to 34.65350, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.46484375 
+
+Epoch 36/100
+ - 1565s - loss: 32.8037 - val_loss: 34.5905
+
+Epoch 00036: val_loss improved from 34.65350 to 34.59046, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.402176339286 
+
+Epoch 37/100
+ - 1564s - loss: 31.9553 - val_loss: 33.9477
+
+Epoch 00037: val_loss improved from 34.59046 to 33.94766, saving model to models/1505_2_blstm_64x1024_best
+ - average WER:  0.546726190476 
+
+Epoch 38/100
+ - 1561s - loss: 31.0412 - val_loss: 34.5596
+
+Epoch 00038: val_loss did not improve
+ - average WER:  0.415457589286 
+
+Epoch 39/100
+ - 1563s - loss: 30.2080 - val_loss: 34.5238
+
+Epoch 00039: val_loss did not improve
+ - average WER:  0.531975446429 
+
+Epoch 40/100
+ - 1564s - loss: 29.3543 - val_loss: 34.1633
+
+Epoch 00040: val_loss did not improve
+ - average WER:  0.556882440476 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 41/100
+ - 1561s - loss: 28.5778 - val_loss: 34.9162
+
+Epoch 00041: val_loss did not improve
+ - average WER:  0.393415178571 
+
+Epoch 42/100
+ - 1564s - loss: 27.8530 - val_loss: 34.4630
+
+Epoch 00042: val_loss did not improve
+ - average WER:  0.421447172619 
+
+Epoch 43/100
+ - 1563s - loss: 27.0650 - val_loss: 34.8620
+
+Epoch 00043: val_loss did not improve
+ - average WER:  0.420238095238 
+
+Epoch 44/100
+ - 1562s - loss: 26.3771 - val_loss: 34.9025
+
+Epoch 00044: val_loss did not improve
+ - average WER:  0.464174107143 
+
+Epoch 45/100
+ - 1562s - loss: 25.6291 - val_loss: 34.7504
+
+Epoch 00045: val_loss did not improve
+ - average WER:  0.45662202381 
+
+Epoch 46/100
+ - 1564s - loss: 24.9344 - val_loss: 35.0318
+
+Epoch 00046: val_loss did not improve
+ - average WER:  0.409468005952 
+
+Epoch 47/100
+ - 1561s - loss: 24.3719 - val_loss: 35.1646
+
+Epoch 00047: val_loss did not improve
+ - average WER:  0.401618303571 
+
+Epoch 48/100
+ - 1559s - loss: 23.7615 - val_loss: 35.3920
+
+Epoch 00048: val_loss did not improve
+ - average WER:  0.513764880952 
+
+Epoch 49/100
+ - 1560s - loss: 23.1492 - val_loss: 35.7815
+
+Epoch 00049: val_loss did not improve
+ - average WER:  0.469866071429 
+
+Epoch 50/100
+ - 1559s - loss: 22.5638 - val_loss: 35.9205
+
+Epoch 00050: val_loss did not improve
+ - average WER:  0.433240327381 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 51/100
+ - 1575s - loss: 22.0181 - val_loss: 36.1437
+
+Epoch 00051: val_loss did not improve
+ - average WER:  0.474534970238 
+
+Epoch 52/100
+ - 1558s - loss: 21.4537 - val_loss: 36.4271
+
+Epoch 00052: val_loss did not improve
+ - average WER:  0.383258928571 
+
+Epoch 53/100
+ - 1559s - loss: 20.8900 - val_loss: 36.6733
+
+Epoch 00053: val_loss did not improve
+ - average WER:  0.404557291667 
+
+Epoch 54/100
+ - 1557s - loss: 20.4101 - val_loss: 36.4605
+
+Epoch 00054: val_loss did not improve
+ - average WER:  0.467317708333 
+
+Epoch 55/100
+ - 1559s - loss: 19.9422 - val_loss: 36.8786
+
+Epoch 00055: val_loss did not improve
+ - average WER:  0.445647321429 
+
+Epoch 56/100
+ - 1572s - loss: 19.5050 - val_loss: 37.1478
+
+Epoch 00056: val_loss did not improve
+ - average WER:  0.470554315476 
+
+Epoch 57/100
+ - 1558s - loss: 18.9964 - val_loss: 36.6604
+
+Epoch 00057: val_loss did not improve
+ - average WER:  0.366852678571 
+
+Epoch 58/100
+ - 1574s - loss: 18.5704 - val_loss: 37.5687
+
+Epoch 00058: val_loss did not improve
+ - average WER:  0.491555059524 
+
+Epoch 59/100
+ - 1560s - loss: 18.1590 - val_loss: 37.5786
+
+Epoch 00059: val_loss did not improve
+ - average WER:  0.41171875 
+
+Epoch 60/100
+ - 1557s - loss: 17.7526 - val_loss: 38.2623
+
+Epoch 00060: val_loss did not improve
+ - average WER:  0.388820684524 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 61/100
+ - 1559s - loss: 17.3021 - val_loss: 38.6482
+
+Epoch 00061: val_loss did not improve
+ - average WER:  0.451488095238 
+
+Epoch 62/100
+ - 1558s - loss: 16.9092 - val_loss: 38.0563
+
+Epoch 00062: val_loss did not improve
+ - average WER:  0.393489583333 
+
+Epoch 63/100
+ - 1558s - loss: 16.5825 - val_loss: 38.5957
+
+Epoch 00063: val_loss did not improve
+ - average WER:  0.432700892857 
+
+Epoch 64/100
+ - 1557s - loss: 16.2193 - val_loss: 39.1607
+
+Epoch 00064: val_loss did not improve
+ - average WER:  0.391982886905 
+
+Epoch 65/100
+ - 1555s - loss: 15.8729 - val_loss: 39.7107
+
+Epoch 00065: val_loss did not improve
+ - average WER:  0.404185267857 
+
+Epoch 66/100
+ - 1556s - loss: 15.5371 - val_loss: 39.0977
+
+Epoch 00066: val_loss did not improve
+ - average WER:  0.40978422619 
+
+Epoch 67/100
+ - 1557s - loss: 15.1186 - val_loss: 39.5536
+
+Epoch 00067: val_loss did not improve
+ - average WER:  0.38634672619 
+
+Epoch 68/100
+ - 1584s - loss: 14.8539 - val_loss: 39.9858
+
+Epoch 00068: val_loss did not improve
+ - average WER:  0.351711309524 
+
+Epoch 69/100
+ - 1557s - loss: 14.5579 - val_loss: 40.6762
+
+Epoch 00069: val_loss did not improve
+ - average WER:  0.396781994048 
+
+Epoch 70/100
+ - 1555s - loss: 14.2236 - val_loss: 40.5711
+
+Epoch 00070: val_loss did not improve
+ - average WER:  0.405171130952 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 71/100
+ - 1555s - loss: 13.9985 - val_loss: 40.4854
+
+Epoch 00071: val_loss did not improve
+ - average WER:  0.397526041667 
+
+Epoch 72/100
+ - 1557s - loss: 13.6425 - val_loss: 40.9098
+
+Epoch 00072: val_loss did not improve
+ - average WER:  0.352455357143 
+
+Epoch 73/100
+ - 1560s - loss: 13.3688 - val_loss: 41.1090
+
+Epoch 00073: val_loss did not improve
+ - average WER:  0.3359375 
+
+Epoch 74/100
+ - 1557s - loss: 13.0997 - val_loss: 40.8759
+
+Epoch 00074: val_loss did not improve
+ - average WER:  0.354724702381 
+
+Epoch 75/100
+ - 1557s - loss: 12.8731 - val_loss: 41.8038
+
+Epoch 00075: val_loss did not improve
+ - average WER:  0.348883928571 
+
+Epoch 76/100
+ - 1560s - loss: 12.6599 - val_loss: 41.4497
+
+Epoch 00076: val_loss did not improve
+ - average WER:  0.383854166667 
+
+Epoch 77/100
+ - 1555s - loss: 12.4148 - val_loss: 42.8335
+
+Epoch 00077: val_loss did not improve
+ - average WER:  0.323753720238 
+
+Epoch 78/100
+ - 1556s - loss: 12.1445 - val_loss: 42.8515
+
+Epoch 00078: val_loss did not improve
+ - average WER:  0.374832589286 
+
+Epoch 79/100
+ - 1558s - loss: 11.9061 - val_loss: 42.3457
+
+Epoch 00079: val_loss did not improve
+ - average WER:  0.380115327381 
+
+Epoch 80/100
+ - 1555s - loss: 11.6791 - val_loss: 43.3393
+
+Epoch 00080: val_loss did not improve
+ - average WER:  0.42265625 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 81/100
+ - 1557s - loss: 11.4888 - val_loss: 43.3843
+
+Epoch 00081: val_loss did not improve
+ - average WER:  0.408110119048 
+
+Epoch 82/100
+ - 1557s - loss: 11.2531 - val_loss: 43.4379
+
+Epoch 00082: val_loss did not improve
+ - average WER:  0.398363095238 
+
+Epoch 83/100
+ - 1554s - loss: 11.0560 - val_loss: 44.0561
+
+Epoch 00083: val_loss did not improve
+ - average WER:  0.372805059524 
+
+Epoch 84/100
+ - 1559s - loss: 10.8942 - val_loss: 43.9867
+
+Epoch 00084: val_loss did not improve
+ - average WER:  0.406975446429 
+
+Epoch 85/100
+ - 1553s - loss: 10.6713 - val_loss: 44.5450
+
+Epoch 00085: val_loss did not improve
+ - average WER:  0.360416666667 
+
+Epoch 86/100
+ - 1556s - loss: 10.4673 - val_loss: 44.1225
+
+Epoch 00086: val_loss did not improve
+ - average WER:  0.334337797619 
+
+Epoch 87/100
+ - 1553s - loss: 10.3408 - val_loss: 44.9791
+
+Epoch 00087: val_loss did not improve
+ - average WER:  0.351376488095 
+
+Epoch 88/100
+ - 1554s - loss: 10.1531 - val_loss: 45.0169
+
+Epoch 00088: val_loss did not improve
+ - average WER:  0.36912202381 
+
+Epoch 89/100
+ - 1556s - loss: 10.0081 - val_loss: 44.8813
+
+Epoch 00089: val_loss did not improve
+ - average WER:  0.329650297619 
+
+Epoch 90/100
+ - 1561s - loss: 9.7886 - val_loss: 45.0198
+
+Epoch 00090: val_loss did not improve
+ - average WER:  0.398697916667 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Epoch 91/100
+ - 1553s - loss: 9.6789 - val_loss: 45.4293
+
+Epoch 00091: val_loss did not improve
+ - average WER:  0.376339285714 
+
+Epoch 92/100
+ - 1557s - loss: 9.4763 - val_loss: 46.0517
+
+Epoch 00092: val_loss did not improve
+ - average WER:  0.36443452381 
+
+Epoch 93/100
+ - 1555s - loss: 9.3751 - val_loss: 46.6980
+
+Epoch 00093: val_loss did not improve
+ - average WER:  0.371149553571 
+
+Epoch 94/100
+ - 1553s - loss: 9.1863 - val_loss: 47.0578
+
+Epoch 00094: val_loss did not improve
+ - average WER:  0.334728422619 
+
+Epoch 95/100
+ - 1557s - loss: 8.9927 - val_loss: 46.1719
+
+Epoch 00095: val_loss did not improve
+ - average WER:  0.338932291667 
+
+Epoch 96/100
+ - 1559s - loss: 8.9005 - val_loss: 46.6384
+
+Epoch 00096: val_loss did not improve
+ - average WER:  0.364918154762 
+
+Epoch 97/100
+ - 1553s - loss: 8.7798 - val_loss: 47.2141
+
+Epoch 00097: val_loss did not improve
+ - average WER:  0.368452380952 
+
+Epoch 98/100
+ - 1556s - loss: 8.5808 - val_loss: 46.8984
+
+Epoch 00098: val_loss did not improve
+ - average WER:  0.387053571429 
+
+Epoch 99/100
+ - 1552s - loss: 8.5004 - val_loss: 47.6274
+
+Epoch 00099: val_loss did not improve
+ - average WER:  0.35974702381 
+
+Epoch 100/100
+ - 1555s - loss: 8.3784 - val_loss: 48.1443
+
+Epoch 00100: val_loss did not improve
+ - average WER:  0.358779761905 
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+
+ - Training ended, test wer:  0.423567708333  -
+
+Prediction samples:
+Original:  this is a mistake though a perfectly natural one                
+Predicted:  this is a mistake thoh perfectly natural one 
+
+Original:  illustration marjoram                                           
+Predicted:  illusstration marroomi 
+
+Original:  he also thought of his managerial position                      
+Predicted:  he also thought of his man aerial position 
+
+Original:  the savage philosopher the dual mind                            
+Predicted:  te savage for losopher the doal mind  
+
+Original:  spring came and passed and then summer                          
+Predicted:  spring came in past and ten summer 
+
+Original:  send my soul clean to asura                                     
+Predicted:  send my soul clean t was ura 
+
+Original:  he seemed to be cursing people who had wronged him              
+Predicted:  he seemed becursing people would wronged him  
+
+Original:  boats put out both from the fort and the shore                  
+Predicted:  boats put ut both from the for an the shore  
+
+Original:  impertinent young beggar said burgess                           
+Predicted:  impertinet young bagger said burgis  
+
+Original:  i'll be glad to try sir he replied                              
+Predicted:  i'll be glad to try sir he replied  
+
+Original:  is papa alone enquired miss temple                              
+Predicted:  is pap a lone inquired mis temple 
+
+Original:  pray go to bed for i am sure you must need rest                 
+Predicted:  prey go to bed for i am suure you must need rest  
+
+Original:  there was an extraordinary force of suggestion in this posturing
+Predicted:  there was enstrorenoa force sejgustee in this posterine  
+
+Original:  no one could escape from this rictus                            
+Predicted:  no one could escape from this wrickus  
+
+Original:  an everlasting laugh                                            
+Predicted:  an ever lasting laugh  
+
+Original:  bring it to the public attention dramatize it                   
+Predicted:  bring it to the pumblic attention dramatise it  
+
+Original:  chapter thirty three a confidant                                
+Predicted:  chapter thirty three a coniddant  
+
+Original:  i had the pleasure of meeting him in society                    
+Predicted:  i had the pleasure of meeting him in society 
+
+Original:  bad generalship i thought it was christmas                      
+Predicted:  bad jeneral ship i vhought it was christmasa  
+
+Original:  illustration rusks                                              
+Predicted:  illustration rustsi 
+
+Original:  to make good home made bread                                    
+Predicted:  to make good whome made bread  
+
+Original:  yes and a very respectable one                                  
+Predicted:  yes and a ver i respectable one 
+
+Original:  he could hardly realise how it had all come about               
+Predicted:  he could hardly ralise how it it all come about 
+
+Original:  i will sit in the parlor awhile and collect my thoughts         
+Predicted:  i will sittin the parlora while and collect my thoughts 
+
+Original:  lemon juice may be added at pleasure                            
+Predicted:  lemon jucemay be added at pleasure  
+
+Original:  but kirkland kept steadily on for the river                     
+Predicted:  but corland kept steadly on for the river  
+
+Original:  but living soul there could be none to meet                     
+Predicted:  ba living soul there could be none to meet 
+
+Original:  not at the hotel just now                                       
+Predicted:  not at the hotell just now  
+
+Original:  i haven't courage enough to do it for myself                    
+Predicted:  i hav en courage enough to do it from myself  
+
+Original:  i do not know confessed shaggy                                  
+Predicted:  i do not know confess shaggy  
+
+Original:  at all events we shall get there some day                       
+Predicted:  at elevants we shall get there somedayr 
+
+Original:  with that came a pang of intense pain                           
+Predicted:  with that came a pang of intense pane 
+
+Original:  i was quartered with him at sarah island                        
+Predicted:  i was quarterd with him at sar islandr 
+
+Original:  fortunately there was nothing from his wife either              
+Predicted:  pertinately there was nothing from his wy either 
+
+Original:  it seemed as if his family troubles were just beginning         
+Predicted:  it seemed as if his family troubles were just beginning 
+
+Original:  our pickets had run in and reported a night attack              
+Predicted:  our picket sad runin and reported ta night attack  
+
+Original:  i'm going to do what you asked me to do when you were in london 
+Predicted:  and gloing to do it you asked me to do when you were in london  
+
+Original:  what alternative was there for her                              
+Predicted:  whet altrate ath les therefore her  
+
+Original:  illustration ginger                                             
+Predicted:  illustration giner 
+
+Original:  he no doubt would bring food of some kind with him              
+Predicted:  he kno doubt wod bring food of some kind withhinm 
+
+Original:  he pulled up a window as if the air were heavy                  
+Predicted:  he pulled up a window as if the air were heavy  
+
+Original:  i don't say that protested michaelis gently                     
+Predicted:  i don't say that protested my calas grently  
+
+Original:  rosecrans protested it was in vain                              
+Predicted:  rose pranse potested it was in vain 
+
+Original:  then bozzle came forward and introduced his wife                
+Predicted:  then bazile came forward and introduced his wifeih 
+
+Original:  the sharp smell of spirits went through the room                
+Predicted:  the sharp smell of spirits went through the ron 
+
+Original:  the private could but he was no general you see                 
+Predicted:  the privite good but he was no janeliusy  
+
+Original:  couldn't help it then how can i ever trust you                  
+Predicted:  could ent tel it than how can i ever trust yol 
+
+Original:  must stop that fifty lashes troke                               
+Predicted:  mast stop that fifty lashes troker 
+
+Original:  but clews there are absolutely none                             
+Predicted:  but clus there are abso lyd on 
+
+Original:  the report is premature my good friend                          
+Predicted:  ther rer purt is premathure my good friend  
+
+Original:  chapter four the first night in camp                            
+Predicted:  chepter for the first night incamp 
+
+Original:  the queen gazed upon our friends with evident interest          
+Predicted:  the queen gazed upon our friends withevident interesti 
+
+Original:  they were within a few miles of their village now               
+Predicted:  they were with in a few miles of their vellige now 
+
+Original:  i gasped positively gasped                                      
+Predicted:  i guessed possitivbly gesed  
+
+Original:  for ambrosch my mama come here                                  
+Predicted:  for ambrosh my monla come here 
+
+Original:  i made a quick glance over my shoulder and grabbed at my gun    
+Predicted:  i made a quick glance o ryi shoulder and grabbe a my gun  
+
+Original:  watch the savages outside said robert                           
+Predicted:  watched tha savegis outside said rober  
+
+Original:  ursus and homo took charge of each other                        
+Predicted:  arsis and how mo to charge of each otherr 
+
+Original:  doctor we all have our crosses have we not                      
+Predicted:  doctor we all have hour crosses have wy not 
+
+Original:  it is like a bandage over one's eyes to come into it            
+Predicted:  it is like a bandage over one's eyes to come into it  
+
+Original:  the sick man raged and shook his fist                           
+Predicted:  the sick man raged and shook his fist 
+
+Original:  sweetwater help me out of this                                  
+Predicted:  wsswe water hel me out of this 
+
+Original:  in about an hour and three quarters the boy returned            
+Predicted:  ind about a ot r in three corders the blay returned 
+
+Original:  he was stone dead but i dropped that foot quick                 
+Predicted:  it was stone dead but i dropped at foot quick  
+
+Log file saved:  results/1505_2_blstm_64x1024_05-15_1245.csv
+Model saved:  models/1505_2_blstm_64x1024
+Ending time:  2018-05-17 08:23:31

@@ -1,0 +1,1024 @@
+/home/marith1/envs/tensorflow/lib/python2.7/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Using TensorFlow backend.
+WARNING:tensorflow:From /home/marith1/envs/tensorflow/lib/python2.7/site-packages/tensorflow/contrib/learn/python/learn/datasets/base.py:198: retry (from tensorflow.contrib.learn.python.learn.datasets.base) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use the retry module or similar alternatives.
+2018-05-20 15:12:32.397438: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-05-20 15:12:33.905514: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:03:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-20 15:12:34.089552: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1344] Found device 1 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+totalMemory: 15.90GiB freeMemory: 15.61GiB
+2018-05-20 15:12:34.091335: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1423] Adding visible gpu devices: 0, 1
+2018-05-20 15:12:34.634606: I tensorflow/core/common_runtime/gpu/gpu_device.cc:911] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-05-20 15:12:34.634653: I tensorflow/core/common_runtime/gpu/gpu_device.cc:917]      0 1 
+2018-05-20 15:12:34.634661: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 0:   N N 
+2018-05-20 15:12:34.634666: I tensorflow/core/common_runtime/gpu/gpu_device.cc:930] 1:   N N 
+2018-05-20 15:12:34.635335: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15133 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:03:00.0, compute capability: 6.0)
+2018-05-20 15:12:34.787293: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1041] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 15133 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-16GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+
+Reading training data:
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-train-clean-100.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 28539)
+('Total number of files (after reduction):', 28035)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 962288)
+('Vocab:', 33508)
+
+Reading validation data: 
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-dev-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2703)
+('Total number of files (after reduction):', 2616)
+('max_intseq_length:', 279)
+('numclasses:', 29)
+('max_trans_charlength:', 279)
+('Words:', 48972)
+('Vocab:', 7726)
+
+Reading test data: 
+('Reading csv:', '/home/marith1/projects/ctc/data_dir/librivox-test-clean.csv')
+Finished reading in data
+removing any sentences that are too big- tweetsize
+('Total number of files:', 2620)
+('Total number of files (after reduction):', 2526)
+('max_intseq_length:', 280)
+('numclasses:', 29)
+('max_trans_charlength:', 280)
+('Words:', 46839)
+('Vocab:', 7547)
+
+
+Model and training parameters: 
+Starting time:  2018-05-20 15:12:27
+ - epochs:  100 
+ - batch size:  64 
+ - input epoch length:  0 
+ - network epoch length:  438 
+ - training on  28032  files 
+ - learning rate:  0.0001 
+ - hidden units:  512 
+ - mfcc features:  26 
+ - dropout:  0.2 
+
+Creating new model:  dnn_blstm
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+the_input (InputLayer)          (None, None, 26)     0                                            
+__________________________________________________________________________________________________
+fc_1 (TimeDistributed)          (None, None, 512)    13824       the_input[0][0]                  
+__________________________________________________________________________________________________
+dropout_1 (TimeDistributed)     (None, None, 512)    0           fc_1[0][0]                       
+__________________________________________________________________________________________________
+fc_2 (TimeDistributed)          (None, None, 512)    262656      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (TimeDistributed)     (None, None, 512)    0           fc_2[0][0]                       
+__________________________________________________________________________________________________
+fc_3 (TimeDistributed)          (None, None, 512)    262656      dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dropout_3 (TimeDistributed)     (None, None, 512)    0           fc_3[0][0]                       
+__________________________________________________________________________________________________
+CuDNN_bi_lstm (Bidirectional)   (None, None, 512)    4202496     dropout_3[0][0]                  
+__________________________________________________________________________________________________
+fc_4 (TimeDistributed)          (None, None, 512)    262656      CuDNN_bi_lstm[0][0]              
+__________________________________________________________________________________________________
+dropout_4 (TimeDistributed)     (None, None, 512)    0           fc_4[0][0]                       
+__________________________________________________________________________________________________
+softmax (TimeDistributed)       (None, None, 29)     14877       dropout_4[0][0]                  
+__________________________________________________________________________________________________
+the_labels (InputLayer)         (None, None)         0                                            
+__________________________________________________________________________________________________
+input_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+label_length (InputLayer)       (None, 1)            0                                            
+__________________________________________________________________________________________________
+ctc (Lambda)                    (None, 1)            0           softmax[0][0]                    
+                                                                 the_labels[0][0]                 
+                                                                 input_length[0][0]               
+                                                                 label_length[0][0]               
+==================================================================================================
+Total params: 5,019,165
+Trainable params: 5,019,165
+Non-trainable params: 0
+__________________________________________________________________________________________________
+Epoch 1/100
+ - 923s - loss: 606.0756 - val_loss: 257.4943
+
+Epoch 00001: val_loss improved from inf to 257.49429, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.980208333333 
+
+Epoch 2/100
+ - 755s - loss: 420.3729 - val_loss: 194.2254
+
+Epoch 00002: val_loss improved from 257.49429 to 194.22537, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.991517857143 
+
+Epoch 3/100
+ - 764s - loss: 338.2896 - val_loss: 158.1886
+
+Epoch 00003: val_loss improved from 194.22537 to 158.18856, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.932626488095 
+
+Epoch 4/100
+ - 760s - loss: 287.9384 - val_loss: 139.9178
+
+Epoch 00004: val_loss improved from 158.18856 to 139.91785, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.90662202381 
+
+Epoch 5/100
+ - 778s - loss: 258.1363 - val_loss: 128.4226
+
+Epoch 00005: val_loss improved from 139.91785 to 128.42263, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.896744791667 
+
+Epoch 6/100
+ - 781s - loss: 237.7485 - val_loss: 120.5670
+
+Epoch 00006: val_loss improved from 128.42263 to 120.56704, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.883816964286 
+
+Epoch 7/100
+ - 797s - loss: 222.7625 - val_loss: 114.9199
+
+Epoch 00007: val_loss improved from 120.56704 to 114.91993, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.852678571429 
+
+Epoch 8/100
+ - 767s - loss: 210.4199 - val_loss: 109.6627
+
+Epoch 00008: val_loss improved from 114.91993 to 109.66274, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.838355654762 
+
+Epoch 9/100
+ - 790s - loss: 200.1530 - val_loss: 105.2886
+
+Epoch 00009: val_loss improved from 109.66274 to 105.28857, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.826376488095 
+
+Epoch 10/100
+ - 788s - loss: 191.1938 - val_loss: 102.5285
+
+Epoch 00010: val_loss improved from 105.28857 to 102.52848, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.824553571429 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 11/100
+ - 791s - loss: 183.5146 - val_loss: 98.0798
+
+Epoch 00011: val_loss improved from 102.52848 to 98.07983, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.787053571429 
+
+Epoch 12/100
+ - 784s - loss: 176.6107 - val_loss: 95.0957
+
+Epoch 00012: val_loss improved from 98.07983 to 95.09567, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.757087053571 
+
+Epoch 13/100
+ - 846s - loss: 170.3931 - val_loss: 93.4656
+
+Epoch 00013: val_loss improved from 95.09567 to 93.46556, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.769568452381 
+
+Epoch 14/100
+ - 858s - loss: 164.7177 - val_loss: 91.3148
+
+Epoch 00014: val_loss improved from 93.46556 to 91.31479, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.786253720238 
+
+Epoch 15/100
+ - 895s - loss: 159.5878 - val_loss: 87.9623
+
+Epoch 00015: val_loss improved from 91.31479 to 87.96228, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.759021577381 
+
+Epoch 16/100
+ - 770s - loss: 154.8462 - val_loss: 88.1598
+
+Epoch 00016: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.751097470238 
+
+Epoch 17/100
+ - 774s - loss: 150.4776 - val_loss: 85.7703
+
+Epoch 00017: val_loss improved from 87.96228 to 85.77026, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.739341517857 
+
+Epoch 18/100
+ - 763s - loss: 146.4609 - val_loss: 83.8189
+
+Epoch 00018: val_loss improved from 85.77026 to 83.81887, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.727064732143 
+
+Epoch 19/100
+ - 762s - loss: 142.6775 - val_loss: 82.4376
+
+Epoch 00019: val_loss improved from 83.81887 to 82.43756, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.722823660714 
+
+Epoch 20/100
+ - 777s - loss: 139.1560 - val_loss: 81.5771
+
+Epoch 00020: val_loss improved from 82.43756 to 81.57708, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.701599702381 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 21/100
+ - 774s - loss: 135.8395 - val_loss: 79.7891
+
+Epoch 00021: val_loss improved from 81.57708 to 79.78907, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.70584077381 
+
+Epoch 22/100
+ - 768s - loss: 132.6684 - val_loss: 78.8645
+
+Epoch 00022: val_loss improved from 79.78907 to 78.86451, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.714025297619 
+
+Epoch 23/100
+ - 774s - loss: 129.6691 - val_loss: 77.1331
+
+Epoch 00023: val_loss improved from 78.86451 to 77.13306, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.695833333333 
+
+Epoch 24/100
+ - 776s - loss: 126.7908 - val_loss: 77.0032
+
+Epoch 00024: val_loss improved from 77.13306 to 77.00324, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.698958333333 
+
+Epoch 25/100
+ - 778s - loss: 124.1215 - val_loss: 75.2413
+
+Epoch 00025: val_loss improved from 77.00324 to 75.24132, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.695163690476 
+
+Epoch 26/100
+ - 764s - loss: 121.6096 - val_loss: 74.2744
+
+Epoch 00026: val_loss improved from 75.24132 to 74.27436, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.685119047619 
+
+Epoch 27/100
+ - 760s - loss: 119.1322 - val_loss: 74.8837
+
+Epoch 00027: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.670163690476 
+
+Epoch 28/100
+ - 768s - loss: 116.8842 - val_loss: 72.6089
+
+Epoch 00028: val_loss improved from 74.27436 to 72.60893, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.661662946429 
+
+Epoch 29/100
+ - 796s - loss: 114.6020 - val_loss: 73.1891
+
+Epoch 00029: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.649702380952 
+
+Epoch 30/100
+ - 779s - loss: 112.5326 - val_loss: 71.4167
+
+Epoch 00030: val_loss improved from 72.60893 to 71.41668, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.648623511905 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 31/100
+ - 774s - loss: 110.4601 - val_loss: 70.2546
+
+Epoch 00031: val_loss improved from 71.41668 to 70.25459, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.621447172619 
+
+Epoch 32/100
+ - 775s - loss: 108.5389 - val_loss: 70.7270
+
+Epoch 00032: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.644252232143 
+
+Epoch 33/100
+ - 780s - loss: 106.6572 - val_loss: 70.1720
+
+Epoch 00033: val_loss improved from 70.25459 to 70.17196, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.644624255952 
+
+Epoch 34/100
+ - 767s - loss: 104.7869 - val_loss: 69.5521
+
+Epoch 00034: val_loss improved from 70.17196 to 69.55213, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.640178571429 
+
+Epoch 35/100
+ - 774s - loss: 102.9615 - val_loss: 69.6193
+
+Epoch 00035: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.656770833333 
+
+Epoch 36/100
+ - 768s - loss: 101.4557 - val_loss: 68.7225
+
+Epoch 00036: val_loss improved from 69.55213 to 68.72248, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.657905505952 
+
+Epoch 37/100
+ - 757s - loss: 99.7729 - val_loss: 67.6338
+
+Epoch 00037: val_loss improved from 68.72248 to 67.63385, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.627194940476 
+
+Epoch 38/100
+ - 794s - loss: 98.1881 - val_loss: 69.1338
+
+Epoch 00038: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.623790922619 
+
+Epoch 39/100
+ - 775s - loss: 96.6910 - val_loss: 68.1365
+
+Epoch 00039: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.646968005952 
+
+Epoch 40/100
+ - 762s - loss: 95.2641 - val_loss: 67.9109
+
+Epoch 00040: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.632514880952 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 41/100
+ - 756s - loss: 93.8538 - val_loss: 66.3256
+
+Epoch 00041: val_loss improved from 67.63385 to 66.32565, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.616480654762 
+
+Epoch 42/100
+ - 764s - loss: 92.3985 - val_loss: 67.9282
+
+Epoch 00042: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.63126860119 
+
+Epoch 43/100
+ - 772s - loss: 91.0972 - val_loss: 66.8207
+
+Epoch 00043: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.640959821429 
+
+Epoch 44/100
+ - 777s - loss: 89.8424 - val_loss: 67.2090
+
+Epoch 00044: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.640680803571 
+
+Epoch 45/100
+ - 762s - loss: 88.6264 - val_loss: 65.6821
+
+Epoch 00045: val_loss improved from 66.32565 to 65.68208, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.613634672619 
+
+Epoch 46/100
+ - 773s - loss: 87.2976 - val_loss: 66.1412
+
+Epoch 00046: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.615085565476 
+
+Epoch 47/100
+ - 780s - loss: 86.1340 - val_loss: 66.4348
+
+Epoch 00047: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.623307291667 
+
+Epoch 48/100
+ - 771s - loss: 84.9397 - val_loss: 65.5335
+
+Epoch 00048: val_loss improved from 65.68208 to 65.53351, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.609579613095 
+
+Epoch 49/100
+ - 775s - loss: 83.7800 - val_loss: 65.0530
+
+Epoch 00049: val_loss improved from 65.53351 to 65.05300, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.618061755952 
+
+Epoch 50/100
+ - 760s - loss: 82.7508 - val_loss: 65.7840
+
+Epoch 00050: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.617503720238 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 51/100
+ - 764s - loss: 81.5879 - val_loss: 66.4640
+
+Epoch 00051: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.582700892857 
+
+Epoch 52/100
+ - 779s - loss: 80.6070 - val_loss: 65.7486
+
+Epoch 00052: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.622730654762 
+
+Epoch 53/100
+ - 759s - loss: 79.5748 - val_loss: 65.1985
+
+Epoch 00053: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.655673363095 
+
+Epoch 54/100
+ - 766s - loss: 78.5641 - val_loss: 65.1310
+
+Epoch 00054: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.633835565476 
+
+Epoch 55/100
+ - 767s - loss: 77.5615 - val_loss: 64.6748
+
+Epoch 00055: val_loss improved from 65.05300 to 64.67481, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.601822916667 
+
+Epoch 56/100
+ - 790s - loss: 76.6903 - val_loss: 64.3510
+
+Epoch 00056: val_loss improved from 64.67481 to 64.35099, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.6015625 
+
+Epoch 57/100
+ - 772s - loss: 75.6647 - val_loss: 65.3489
+
+Epoch 00057: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.596558779762 
+
+Epoch 58/100
+ - 772s - loss: 74.7735 - val_loss: 64.8719
+
+Epoch 00058: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.617466517857 
+
+Epoch 59/100
+ - 767s - loss: 73.8356 - val_loss: 64.7686
+
+Epoch 00059: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.628478422619 
+
+Epoch 60/100
+ - 771s - loss: 72.9903 - val_loss: 64.7799
+
+Epoch 00060: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.630264136905 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 61/100
+ - 776s - loss: 72.1799 - val_loss: 64.1774
+
+Epoch 00061: val_loss improved from 64.35099 to 64.17741, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.619345238095 
+
+Epoch 62/100
+ - 759s - loss: 71.3775 - val_loss: 64.5597
+
+Epoch 00062: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.611755952381 
+
+Epoch 63/100
+ - 756s - loss: 70.5300 - val_loss: 64.7574
+
+Epoch 00063: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.616945684524 
+
+Epoch 64/100
+ - 756s - loss: 69.7734 - val_loss: 64.2462
+
+Epoch 00064: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.605412946429 
+
+Epoch 65/100
+ - 769s - loss: 68.9108 - val_loss: 64.2997
+
+Epoch 00065: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.595591517857 
+
+Epoch 66/100
+ - 767s - loss: 68.1519 - val_loss: 64.5585
+
+Epoch 00066: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.640866815476 
+
+Epoch 67/100
+ - 757s - loss: 67.4310 - val_loss: 66.4086
+
+Epoch 00067: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.626525297619 
+
+Epoch 68/100
+ - 776s - loss: 66.6918 - val_loss: 65.0636
+
+Epoch 00068: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.615308779762 
+
+Epoch 69/100
+ - 752s - loss: 65.8996 - val_loss: 65.5477
+
+Epoch 00069: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.615587797619 
+
+Epoch 70/100
+ - 754s - loss: 65.1125 - val_loss: 65.5516
+
+Epoch 00070: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.610193452381 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 71/100
+ - 753s - loss: 64.6140 - val_loss: 64.4411
+
+Epoch 00071: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.590531994048 
+
+Epoch 72/100
+ - 775s - loss: 63.9254 - val_loss: 64.2437
+
+Epoch 00072: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.625316220238 
+
+Epoch 73/100
+ - 760s - loss: 63.2387 - val_loss: 64.4082
+
+Epoch 00073: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.630282738095 
+
+Epoch 74/100
+ - 766s - loss: 62.5250 - val_loss: 65.5649
+
+Epoch 00074: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.620610119048 
+
+Epoch 75/100
+ - 775s - loss: 61.9023 - val_loss: 63.8772
+
+Epoch 00075: val_loss improved from 64.17741 to 63.87719, saving model to models/2005_blstm_28k_best
+calc wer for 40  epoch lenght
+ - average WER:  0.611625744048 
+
+Epoch 76/100
+ - 757s - loss: 61.2312 - val_loss: 65.5441
+
+Epoch 00076: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.592466517857 
+
+Epoch 77/100
+ - 751s - loss: 60.6985 - val_loss: 65.9695
+
+Epoch 00077: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.622563244048 
+
+Epoch 78/100
+ - 769s - loss: 60.0032 - val_loss: 65.0349
+
+Epoch 00078: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.630282738095 
+
+Epoch 79/100
+ - 767s - loss: 59.4559 - val_loss: 64.6954
+
+Epoch 00079: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.629613095238 
+
+Epoch 80/100
+ - 775s - loss: 58.8557 - val_loss: 66.7704
+
+Epoch 00080: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.600744047619 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 81/100
+ - 760s - loss: 58.2454 - val_loss: 65.1422
+
+Epoch 00081: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.615271577381 
+
+Epoch 82/100
+ - 769s - loss: 57.6340 - val_loss: 66.2440
+
+Epoch 00082: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.613709077381 
+
+Epoch 83/100
+ - 767s - loss: 57.0895 - val_loss: 66.6262
+
+Epoch 00083: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.605338541667 
+
+Epoch 84/100
+ - 773s - loss: 56.5938 - val_loss: 66.2417
+
+Epoch 00084: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.602920386905 
+
+Epoch 85/100
+ - 779s - loss: 56.1245 - val_loss: 67.3495
+
+Epoch 00085: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.6125 
+
+Epoch 86/100
+ - 769s - loss: 55.5266 - val_loss: 66.0694
+
+Epoch 00086: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.592633928571 
+
+Epoch 87/100
+ - 751s - loss: 54.9585 - val_loss: 66.5636
+
+Epoch 00087: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.598195684524 
+
+Epoch 88/100
+ - 760s - loss: 54.5444 - val_loss: 66.7670
+
+Epoch 00088: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.627250744048 
+
+Epoch 89/100
+ - 782s - loss: 53.9754 - val_loss: 67.8276
+
+Epoch 00089: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.611886160714 
+
+Epoch 90/100
+ - 759s - loss: 53.5115 - val_loss: 67.1940
+
+Epoch 00090: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.623177083333 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Epoch 91/100
+ - 763s - loss: 52.9185 - val_loss: 67.4819
+
+Epoch 00091: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.618229166667 
+
+Epoch 92/100
+ - 759s - loss: 52.4799 - val_loss: 67.8669
+
+Epoch 00092: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.621391369048 
+
+Epoch 93/100
+ - 775s - loss: 52.1509 - val_loss: 66.8813
+
+Epoch 00093: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.616052827381 
+
+Epoch 94/100
+ - 772s - loss: 51.6335 - val_loss: 67.9320
+
+Epoch 00094: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.60505952381 
+
+Epoch 95/100
+ - 767s - loss: 51.1128 - val_loss: 67.9790
+
+Epoch 00095: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.618638392857 
+
+Epoch 96/100
+ - 754s - loss: 50.7872 - val_loss: 67.6080
+
+Epoch 00096: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.598586309524 
+
+Epoch 97/100
+ - 758s - loss: 50.3354 - val_loss: 67.3434
+
+Epoch 00097: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.590587797619 
+
+Epoch 98/100
+ - 762s - loss: 49.7756 - val_loss: 68.1919
+
+Epoch 00098: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.599497767857 
+
+Epoch 99/100
+ - 771s - loss: 49.4911 - val_loss: 68.7869
+
+Epoch 00099: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.591350446429 
+
+Epoch 100/100
+ - 749s - loss: 49.0948 - val_loss: 67.8543
+
+Epoch 00100: val_loss did not improve
+calc wer for 40  epoch lenght
+ - average WER:  0.602213541667 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+calc wer for 39  epoch lenght
+
+ - Training ended, test wer:  0.606603422619  -
+
+Prediction samples:
+
+Original:  for ambrosch my mama come here                                  
+Predicted:  for amrse mya mo oc come here 
+
+Original:  i'm going to do what you asked me to do when you were in london 
+Predicted:  and going ou dou it you asked me youdo when you wer in london 
+
+Original:  i'll be glad to try sir he replied                              
+Predicted:  hi'l be glad totry sir you replied 
+
+Original:  fortunately there was nothing from his wife either              
+Predicted:  erginatley there was nettheng throm is wif ither 
+
+Original:  with that came a pang of intense pain                           
+Predicted:  whithat cim a pang of intense pae 
+
+Original:  illustration ginger                                             
+Predicted:  ilistrantion gjinger 
+
+Original:  bad generalship i thought it was christmas                      
+Predicted:  mad genlship by faght it was cristmessa 
+
+Original:  but clews there are absolutely none                             
+Predicted:  but cluse there are abselutely knon 
+
+Original:  he also thought of his managerial position                      
+Predicted:  the also thougt of his minageriulposition 
+
+Original:  the private could but he was no general you see                 
+Predicted:  the frivad old but he was o jenelosyy 
+
+Original:  sweetwater help me out of this                                  
+Predicted:  sweemuer ofmy ot ofths 
+
+Original:  but kirkland kept steadily on for the river                     
+Predicted:  but corling kept steadly on for the river 
+
+Original:  then bozzle came forward and introduced his wife                
+Predicted:  then bozl chinforwrd an introduce his wife 
+
+Original:  i haven't courage enough to do it for myself                    
+Predicted:  i haveen'tcurage enough to do it form myself 
+
+Original:  they were within a few miles of their village now               
+Predicted:  theye were with in a few mile of their vilage now 
+
+Original:  ursus and homo took charge of each other                        
+Predicted:  ersis an how mot to charge of each other 
+
+Original:  it is like a bandage over one's eyes to come into it            
+Predicted:  itit like a banda jober ons eyes to come into it 
+
+Original:  pray go to bed for i am sure you must need rest                 
+Predicted:  preg oto bead for  am sure you must need rest 
+
+Original:  i was quartered with him at sarah island                        
+Predicted:  i was cqorterd with im et sere eislan 
+
+Original:  i gasped positively gasped                                      
+Predicted:  i guesed photitivly gast 
+
+Original:  he no doubt would bring food of some kind with him              
+Predicted:  he kno daut wyd gring foth dir sem kind with in 
+
+Original:  bring it to the public attention dramatize it                   
+Predicted:  bringato the poublic atention dramitise it 
+
+Original:  rosecrans protested it was in vain                              
+Predicted:  rose crance protestet it was invain 
+
+Original:  must stop that fifty lashes troke                               
+Predicted:  muy stop that fifty lashhi's troke 
+
+Original:  the savage philosopher the dual mind                            
+Predicted:  the saage holos of her the du mnd 
+
+Original:  lemon juice may be added at pleasure                            
+Predicted:  lemman jusma be aded at pleasuor 
+
+Original:  no one could escape from this rictus                            
+Predicted:  nowind could escape from this rictece 
+
+Original:  not at the hotel just now                                       
+Predicted:  not at the hotel just nowa 
+
+Original:  i don't say that protested michaelis gently                     
+Predicted:  i on't say that protested my calas santly 
+
+Original:  what alternative was there for her                              
+Predicted:  what adteardit of las ther for her 
+
+Original:  boats put out both from the fort and the shore                  
+Predicted:  bohts put op oth from te foredan the shore 
+
+Original:  the sick man raged and shook his fist                           
+Predicted:  the sick manraged and shook hisfis 
+
+Original:  illustration marjoram                                           
+Predicted:  ilistration margern 
+
+Original:  this is a mistake though a perfectly natural one                
+Predicted:  this is amis dake ogh perfictly natral one 
+
+Original:  in about an hour and three quarters the boy returned            
+Predicted:  in abot an and gre quardas the boyve itan 
+
+Original:  but living soul there could be none to meet                     
+Predicted:  bu litting sol there could be knone to meet 
+
+Original:  the sharp smell of spirits went through the room                
+Predicted:  the sharp smell of spirits wet thrugh the roo 
+
+Original:  i do not know confessed shaggy                                  
+Predicted:  i do not kno conpfessed shaky 
+
+Original:  spring came and passed and then summer                          
+Predicted:  spring cam in pased and ten sume 
+
+Original:  yes and a very respectable one                                  
+Predicted:  yes an o vere respectable one 
+
+Original:  i made a quick glance over my shoulder and grabbed at my gun    
+Predicted:  i mide a qquick glanceo ri s older and grad at my gdon 
+
+Original:  he was stone dead but i dropped that foot quick                 
+Predicted:  he was stone dead but i droped hat foot quick 
+
+Original:  an everlasting laugh                                            
+Predicted:  and ever lasting laugh 
+
+Original:  he could hardly realise how it had all come about               
+Predicted:  he cent herh thy realie how it it all come abhat 
+
+Original:  illustration rusks                                              
+Predicted:  inlistration rusks 
+
+Original:  there was an extraordinary force of suggestion in this posturing
+Predicted:  theeh was astor ni force of suggestin in this posterng 
+
+Original:  the queen gazed upon our friends with evident interest          
+Predicted:  the queendased oponorfrinds withot i intrest 
+
+Original:  chapter thirty three a confidant                                
+Predicted:  chapter thery three a onfedat 
+
+Original:  impertinent young beggar said burgess                           
+Predicted:  inpertnat youngbeger said burgese 
+
+Original:  i will sit in the parlor awhile and collect my thoughts         
+Predicted:  i wil sitin the parler a while and clepktd my thoughts 
+
+Original:  he seemed to be cursing people who had wronged him              
+Predicted:  he seeme to be cursing peoople wod rouned him 
+
+Original:  couldn't help it then how can i ever trust you                  
+Predicted:  couldint el tit thent how an i ever trustyald 
+
+Original:  he pulled up a window as if the air were heavy                  
+Predicted:  he poled up a wondow as if the er were heavy 
+
+Original:  chapter four the first night in camp                            
+Predicted:  jheperfor the first night inamp 
+
+Original:  it seemed as if his family troubles were just beginning         
+Predicted:  inseeme das if his anly trouvbeles ere just beginni 
+
+Original:  send my soul clean to asura                                     
+Predicted:  sin my sol cen twasou erea 
+
+Original:  at all events we shall get there some day                       
+Predicted:  at all evence we shall get their someda 
+
+Original:  the report is premature my good friend                          
+Predicted:  the report is premat shor my could friend 
+
+Original:  our pickets had run in and reported a night attack              
+Predicted:  ore picked sad run in ind reported the night attack 
+
+Original:  doctor we all have our crosses have we not                      
+Predicted:  doctor we al have er crosses have we not 
+
+Original:  i had the pleasure of meeting him in society                    
+Predicted:  i had the pleasure meding him an society 
+
+Original:  to make good home made bread                                    
+Predicted:  to make good home mae bread 
+
+Original:  is papa alone enquired miss temple                              
+Predicted:  is coppolone iqured mestemple 
+
+Original:  watch the savages outside said robert                           
+Predicted:  watche the sabbae is outside aid roer 
+
+Log file saved:  results/2005_blstm_28k_05-20_1512.csv
+Model saved:  models/2005_blstm_28k
+Ending time:  2018-05-21 12:43:27
