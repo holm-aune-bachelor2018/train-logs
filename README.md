@@ -1,8 +1,11 @@
 ## train-logs
 
-This repo contains the result and log files as well as the trained models from https://github.com/holm-aune-bachelor2018/ctc
+This repository is a part of TDAT3001 Bachelor Thesis in Computer Engineering at NTNU, project number 61:
 
-Results are a part of the Bachelor Thesis in Computer Engineering at NTNU, IDI 2018 for Anita Kristine Aune and Marit Sundet-Holm
+"End-to-end speech recognition with recurrent neural networks and connectionist temporal classification" by Anita Kristine Aune and Marit Sundet-Holm, 2018.
+
+This repository contains the result- and log files, as well as the trained models from https://github.com/holm-aune-bachelor2018/ctc
+
 
 Each trained model has its own folder containing:
 - Output log generated during training 
